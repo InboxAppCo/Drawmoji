@@ -18,6 +18,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         window = UIWindow()
         window?.rootViewController = UINavigationController(rootViewController: DrawingsViewController())
         window?.makeKeyAndVisible()
+        
+        do {
+            let files = try NSFileManager.defaultManager().contentsOfDirectoryAtPath(NSBundle.mainBundle().bundlePath)
+            for fileName in files {
+                print(fileName)
+            }
+        }
+        catch _ as NSError {
+            
+        }
+        
         return true
     }
 

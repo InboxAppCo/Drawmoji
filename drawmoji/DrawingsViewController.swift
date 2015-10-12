@@ -58,7 +58,19 @@ class DrawingsViewController: UIViewController, UICollectionViewDataSource, UICo
     }
     
     func compose() {
-        presentViewController(UINavigationController.init(rootViewController: DrawingViewController()), animated: true, completion: nil)
+        let path = NSBundle.mainBundle().pathForResource("561bc1d202f859ee1d0041a8", ofType:"ibdr")
+        let image = UIImage(named: "264d699168b4f4b296763ace985a5d89")
+        let JSONData = NSData(contentsOfFile:path!)
+        do {
+            let JSON = try NSJSONSerialization.JSONObjectWithData(JSONData!, options:NSJSONReadingOptions(rawValue: 0))
+            let drawing = Drawing.parseLegacyDrawingFromJson(JSON["paths"] as! NSArray, height: JSON["height"] as! NSInteger, width: JSON["width"] as! NSInteger, lineWidth: JSON["line_width"] as! CGFloat, image: image)
+            let drawingController = DrawingViewController()
+            drawingController.drawing = drawing
+            presentViewController(UINavigationController.init(rootViewController: drawingController), animated: true, completion: nil)
+        }
+        catch let JSONError as NSError {
+            print("\(JSONError)")
+        }
     }
     
     func info() {

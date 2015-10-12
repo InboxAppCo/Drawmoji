@@ -13,7 +13,7 @@ class Line: NSObject {
     
     var points = [CGPoint]()
     var color:UIColor = UIColor.blackColor()
-    var size:CGFloat = 5.0
+    var lineWidth:CGFloat = 5.0
     
     // MARK: Interface
     
@@ -63,16 +63,12 @@ class Line: NSObject {
             }
             
             CGContextSetStrokeColorWithColor(context, theColor)
-            CGContextSetLineWidth(context, size)
-            
-            let path = CGPathCreateMutable();
+            CGContextSetLineWidth(context, lineWidth)
+            CGContextBeginPath(context)
             let mid1 = midPointOfPoints(priorPoint,point2: priorPriorPoint);
             let mid2 = midPointOfPoints(point,point2: priorPoint);
-            let subpath = CGPathCreateMutable();
-            CGPathMoveToPoint(subpath, nil, mid1.x, mid1.y);
-            CGPathAddQuadCurveToPoint(subpath, nil, priorPoint.x, priorPoint.y, mid2.x, mid2.y);
-            CGPathAddPath(path, nil, subpath);
-            CGContextAddPath(context,path)
+            CGContextMoveToPoint(context, mid1.x, mid1.y)
+            CGContextAddQuadCurveToPoint(context, priorPoint.x, priorPoint.y, mid2.x, mid2.y)
             CGContextStrokePath(context)
             
             maybePriorPriorPoint = maybePriorPoint
@@ -88,7 +84,7 @@ class Line: NSObject {
         var rect = CGRect(origin:point, size: CGSize.zero)
         
         // The negative magnitude ensures an outset rectangle.
-        let magnitude = -3 * size - 2
+        let magnitude = -3 * lineWidth - 2
         rect.insetInPlace(dx: magnitude, dy: magnitude)
         
         return rect

@@ -10,11 +10,22 @@ import Foundation
 import UIKit
 
 class DrawingJsonProcessor {
-    class func decodeDrawingFromFile(paths:NSArray,height:Int,width:Int,lineWidth:Float,image:UIImage) -> Drawing? {
+    class func decodeDrawingFromFile(paths:NSArray,height:NSInteger,width:NSInteger,lineWidth:CGFloat,image:UIImage?) -> Drawing? {
+        print(paths)
+        
         let drawing:Drawing = Drawing()
         
         for path in paths {
-            
+            let line:Line = Line()
+            let colorString:String = path["color"] as! String
+            line.color = UIColor(hexString:colorString)
+            line.lineWidth = lineWidth
+            for point in path["points"] as! NSArray {
+                let x = point[0] as! Double
+                let y = point[1] as! Double
+                line.addPointAtLocation(CGPoint(x: x, y: y))
+            }
+            drawing.lines.append(line)
         }
         
         drawing.height = height

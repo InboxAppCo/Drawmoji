@@ -11,10 +11,11 @@ import UIKit
 class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerViewControllerDelegate, SizePickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // MARK: Properties
     
+    var imagePicker:UIImagePickerController? = nil
     var topToolbar:UIToolbar = UIToolbar()
     var bottomToolbar:UIToolbar = UIToolbar()
-    let imagePicker = UIImagePickerController()
     var drawingCanvasView:DrawingCanvasView?
+    var drawing:Drawing?
     
     // MARK: View Life Cycle
     
@@ -33,10 +34,15 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
         
         automaticallyAdjustsScrollViewInsets = false
         
-        drawingCanvasView = DrawingCanvasView(frame: CGRect(x: 0, y: 108, width: view.frame.size.width, height: view.frame.size.height-152))
+        if let drawing = drawing {
+            drawingCanvasView = DrawingCanvasView(drawing: drawing)
+            let size = drawingCanvasView?.frame.size
+            drawingCanvasView?.frame = CGRect(origin: CGPoint(x: 0, y: 108), size: size!)
+        } else {
+            drawingCanvasView = DrawingCanvasView(frame: CGRect(x: 0, y: 108, width: view.frame.size.width, height: view.frame.size.height-152))
+        }
         view.addSubview(drawingCanvasView!)
-        
-        imagePicker.delegate = self
+        drawingCanvasView!.forceDrawAllLines()
         
         topToolbar.frame = CGRect(x: 0, y: 64, width: view.frame.size.width, height: 44)
         topToolbar.delegate = self
@@ -56,14 +62,21 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
         bottomToolbar.setItems(bottomToolbarButtons, animated:false)
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        imagePicker = UIImagePickerController()
+        imagePicker?.allowsEditing = false
+    }
+    
     // MARK: Actions
     
     func clearView(sender: UIBarButtonItem) {
-        drawingCanvasView?.canvasView.clear()
+        drawingCanvasView?.clear()
     }
     
     func back(sender: UIBarButtonItem) {
-        drawingCanvasView?.canvasView.back()
+        drawingCanvasView?.back()
     }
     
     func play(sender: UIBarButtonItem) {
@@ -78,10 +91,6 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
             self.view.backgroundColor = UIColor.whiteColor()
         }
         setTopToolbarButtonItemsForPlaying(true)
-    }
-    
-    func forward(sender: UIBarButtonItem) {
-        drawingCanvasView?.canvasView.forward()
     }
     
     func changeColor(sender: UIBarButtonItem) {
@@ -113,19 +122,17 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
         
         if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera) {
             let photoAction = UIAlertAction(title: "Take Photo", style: .Default) { (action) in
-                self.imagePicker.allowsEditing = false
-                self.imagePicker.sourceType = UIImagePickerControllerSourceType.Camera
+                self.imagePicker!.sourceType = UIImagePickerControllerSourceType.Camera
                 
-                self.presentViewController(self.imagePicker, animated: true, completion: nil)
+                self.presentViewController(self.imagePicker!, animated: true, completion: nil)
             }
             alertController.addAction(photoAction)
         }
         
         let galleryAction = UIAlertAction(title: "Choose Photo", style: .Default) { (action) in
-            self.imagePicker.allowsEditing = false
-            self.imagePicker.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+            self.imagePicker!.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
             
-            self.presentViewController(self.imagePicker, animated: true, completion: nil)
+            self.presentViewController(self.imagePicker!, animated: true, completion: nil)
         }
         alertController.addAction(galleryAction)
         
@@ -181,19 +188,25 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
     // MARK: ColorPickerViewControllerDelegate
     
     func colorSelectionChanged(color: UIColor) {
-        drawingCanvasView?.canvasView.color = color
+        drawingCanvasView?.setCurrentColor(color)
     }
     
     // MARK: SizePickerViewControllerDelegate
     
     func sizeSelectionChanged(size: CGFloat) {
-        drawingCanvasView?.canvasView.size = size
+        drawingCanvasView?.setCurrentLineWidth(size)
+    }
+    
+    // MARK: CanvasViewDelegate
+    
+    func updatedUndoRedoCounts(undoCount: Int) {
+        print("undo count:\(undoCount)")
     }
     
     // MARK: UIImagePickerControllerDelegate Methods
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
-        drawingCanvasView?.backgroundImageView.image = image
+        drawingCanvasView?.setBackgroundImage(image)
         dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -204,18 +217,18 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
     // MARK: Bar Button Items
     
     func setTopToolbarButtonItemsForPlaying(animated:Bool) {
-        let fixedSpaceBarButtonItem = UIBarButtonItem(barButtonSystemItem: .FixedSpace, target: nil, action: nil)
-        fixedSpaceBarButtonItem.width = 15.0
+        //let fixedSpaceBarButtonItem = UIBarButtonItem(barButtonSystemItem: .FixedSpace, target: nil, action: nil)
+        //fixedSpaceBarButtonItem.width = 15.0
         
         var topToolbarButtons = [UIBarButtonItem]()
         topToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: "clearView:"))
-        topToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil))
         topToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .Rewind, target: self, action: "back:"))
+        topToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil))
         //topToolbarButtons.append(fixedSpaceBarButtonItem)
         //topToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .Play, target: self, action: "play:"))
-        topToolbarButtons.append(fixedSpaceBarButtonItem)
-        topToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .FastForward, target: self, action: "forward:"))
-        topToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil))
+        //topToolbarButtons.append(fixedSpaceBarButtonItem)
+        //topToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .FastForward, target: self, action: "forward:"))
+        //topToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil))
         topToolbarButtons.append(UIBarButtonItem(title: "Size", style: .Plain, target: self, action: "changeSize:"))
         topToolbarButtons.append(UIBarButtonItem(title: "Color", style: .Plain, target: self, action: "changeColor:"))
         topToolbar.setItems(topToolbarButtons, animated: animated)

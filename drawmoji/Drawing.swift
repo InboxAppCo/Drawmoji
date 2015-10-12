@@ -11,12 +11,12 @@ import UIKit
 
 class Drawing:NSObject {
     
-    var paths:[Line] = [Line]()
-    var height:Int?
-    var width:Int?
+    var lines:[Line] = [Line]()
+    var height:Int = 0
+    var width:Int = 0
     var backgroundImage:UIImage?
     
-    class func parseLegacyDrawingFromJson(paths:NSArray,height:Int,width:Int,lineWidth:Float,image:UIImage) -> Drawing? {
+    class func parseLegacyDrawingFromJson(paths:NSArray,height:NSInteger,width:NSInteger,lineWidth:CGFloat,image:UIImage?) -> Drawing? {
         if let theDrawing = DrawingJsonProcessor.decodeDrawingFromFile(paths, height: height, width: width, lineWidth: lineWidth, image: image) {
             return theDrawing
         } else {
@@ -31,4 +31,8 @@ class Drawing:NSObject {
 //            
 //        }
 //    }
+    
+    func size() -> CGSize {
+        return CGSize(width: width, height: height)
+    }
 }

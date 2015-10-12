@@ -8,26 +8,31 @@
 
 import UIKit
 
+protocol CanvasViewDelegate {
+    func updatedUndoRedoCounts(undoCount:Int)
+    func willForceDrawAllLines(background:Bool)
+    func didForceDrawAllLines(background:Bool)
+}
+
 class CanvasView: UIControl
 {
     // MARK: Properties
     
-    var lines = [Line]()
-    var color = UIColor.blackColor()
-    var size:CGFloat = 5.0
+    var delegate:CanvasViewDelegate?
+    var lines:[Line]
+    var currentColor = UIColor.blackColor()
+    var currentLineWidth:CGFloat = 5.0
     var frozenImage:CGImage?
+    var backCount:Int = 0
     
     ///
     private var activeLine:Line?
     ///
-    private var unDidLines = [Line]()
-    ///
     private var frozenImages = [CGImageRef]()
-    private var unFrozenImages = [CGImageRef]()
     
     /// A `CGContext` for drawing the last representation of lines no longer receiving updates into.
     private lazy var frozenContext: CGContext = {
-        let scale = self.window!.screen.scale
+        let scale = UIApplication.sharedApplication().delegate!.window!!.screen.scale
         var size = self.bounds.size
         
         size.width *= scale
@@ -45,6 +50,20 @@ class CanvasView: UIControl
     
     // MARK: Override
     
+    init(frame:CGRect, lines:[Line]) {
+        self.lines = lines
+        super.init(frame: frame)
+    }
+    
+    override init(frame: CGRect) {
+        lines = [Line]()
+        super.init(frame: frame)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         for touch in touches {
             drawPoint(touch.locationInView(self))
@@ -58,16 +77,10 @@ class CanvasView: UIControl
     }
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        for touch in touches {
-             drawPoint(touch.locationInView(self))
-        }
         endTouches(false)
     }
     
     override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
-        for touch in touches! {
-            drawPoint(touch.locationInView(self))
-        }
         endTouches(true)
     }
     
@@ -94,9 +107,7 @@ class CanvasView: UIControl
     {
         activeLine = nil
         lines.removeAll()
-        unDidLines.removeAll()
         frozenImages.removeAll()
-        unFrozenImages.removeAll()
         CGContextClearRect(frozenContext, bounds)
         frozenImage = CGBitmapContextCreateImage(frozenContext)
         setNeedsDisplay()
@@ -104,52 +115,33 @@ class CanvasView: UIControl
     
     func back()
     {
-        activeLine = nil
-        if lines.count > 0 {
-            unDidLines.append(lines.last!)
-            lines.removeLast()
+        if backCount == 0 {
+            return
         }
+        
+        activeLine = nil
         if frozenImages.count > 0 {
-            unFrozenImages.append(frozenImages.last!)
             frozenImages.removeLast()
+            
+            if lines.count > 0 {
+                lines.removeLast()
+            }
         }
         CGContextClearRect(frozenContext, bounds)
         if frozenImages.count > 0 {
             frozenImage = frozenImages.last
             CGContextDrawImage(frozenContext, bounds, frozenImage)
-        } else {
-            frozenImage = CGBitmapContextCreateImage(frozenContext)
+        } else if lines.count == 0 {
+            frozenImage = nil
         }
         setNeedsDisplay()
-    }
-    
-    func forward()
-    {
-        activeLine = nil
-        if unDidLines.count > 0 {
-            lines.append(unDidLines.last!)
-            unDidLines.removeLast()
-        }
-        if unFrozenImages.count > 0 {
-            frozenImages.append(unFrozenImages.last!)
-            unFrozenImages.removeLast()
-            frozenImage = frozenImages.last
-            CGContextClearRect(frozenContext, bounds)
-            CGContextDrawImage(frozenContext, bounds, frozenImage)
-        }
-        setNeedsDisplay()
+        backCount--
+        updateUndoRedoCounts()
     }
     
     // MARK: Convenience
     
     func drawPoint(point:CGPoint) {
-        if unDidLines.count > 0 {
-            unDidLines.removeAll()
-        }
-        if unFrozenImages.count > 0 {
-            unFrozenImages.removeAll()
-        }
-        
         let line = activeLine ?? addActiveLine()
         let rect = line.addPointAtLocation(point)
         setNeedsDisplayInRect(rect)
@@ -157,14 +149,12 @@ class CanvasView: UIControl
     
     func addActiveLine() -> Line {
         let newLine = Line()
-        newLine.color = color
-        newLine.size = size
+        newLine.color = currentColor
+        newLine.lineWidth = currentLineWidth
         
         activeLine = newLine
         
         lines.append(newLine)
-        
-        print("\(lines.count)")
         
         return newLine
     }
@@ -180,6 +170,8 @@ class CanvasView: UIControl
             activeLine = nil
             
             setNeedsDisplay()
+            
+            updateUndoRedoCounts()
         }
     }
     
@@ -193,8 +185,48 @@ class CanvasView: UIControl
                 let downsampledImaged = UIImage(data:imageAsData);
                 frozenImage = downsampledImaged?.CGImage
                 frozenImages.append((downsampledImaged?.CGImage)!)
+                if frozenImages.count > 21 {
+                    frozenImages.removeFirst()
+                }
             } else {
                 lines.removeLast()
+            }
+        }
+        
+        if backCount < 20 {
+            backCount++
+        }
+    }
+    
+    func updateUndoRedoCounts() {
+        if let delegate = delegate {
+            delegate.updatedUndoRedoCounts(backCount)
+        }
+    }
+    
+    func forceDrawAllLines(background:Bool) {
+        if let delegate = delegate {
+            delegate.willForceDrawAllLines(background)
+        }
+        if background {
+            dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) { // 1
+                for line in self.lines {
+                    self.finishLine(line)
+                }
+                dispatch_async(dispatch_get_main_queue()) { // 2
+                    self.setNeedsDisplay()
+                    if let delegate = self.delegate {
+                        delegate.didForceDrawAllLines(background)
+                    }
+                }
+            }
+        } else {
+            for line in self.lines {
+                finishLine(line)
+            }
+            setNeedsDisplay()
+            if let delegate = delegate {
+                delegate.didForceDrawAllLines(background)
             }
         }
     }
