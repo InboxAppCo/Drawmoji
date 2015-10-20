@@ -11,8 +11,6 @@ import UIKit
 
 class DrawingJsonProcessor {
     class func decodeDrawingFromFile(paths:NSArray,height:NSInteger,width:NSInteger,lineWidth:CGFloat,image:UIImage?) -> Drawing? {
-        print(paths)
-        
         let drawing:Drawing = Drawing()
         
         for path in paths {

@@ -8,13 +8,13 @@
 
 import UIKit
 
-protocol ColorPickerViewControllerDelegate {
+protocol ColorPickerViewControllerDelegate:class {
     func colorSelectionChanged(color:UIColor)
 }
 
 class ColorPickerViewController:UIViewController, UITableViewDataSource, UITableViewDelegate{
     let tableView = UITableView()
-    var delegate:ColorPickerViewControllerDelegate?
+    weak var delegate:ColorPickerViewControllerDelegate?
     
     let colors:[UIColor] = [UIColor.blackColor(),UIColor.darkGrayColor(),UIColor.lightGrayColor(),UIColor.whiteColor(),UIColor.grayColor(),UIColor.redColor(),UIColor.greenColor(),UIColor.blueColor(),UIColor.cyanColor(),UIColor.yellowColor(),UIColor.magentaColor(),UIColor.orangeColor(),UIColor.purpleColor(),UIColor.brownColor(),UIColor.clearColor()]
     let titles:[String] = ["Black","Dark Gray","Light Gray","White","Gray","Red","Green","Blue","Cyan","Yellow","Magenta","Orange","Purple","Brown","Eraser"]

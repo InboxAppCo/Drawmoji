@@ -8,15 +8,18 @@
 
 import UIKit
 
-protocol SizePickerViewControllerDelegate {
+protocol SizePickerViewControllerDelegate:class
+{
     func sizeSelectionChanged(size:CGFloat)
 }
 
-class SizePickerViewController:UIViewController, UITableViewDataSource, UITableViewDelegate{
+class SizePickerViewController:UIViewController, UITableViewDataSource, UITableViewDelegate
+{
     let tableView = UITableView()
-    var delegate:SizePickerViewControllerDelegate?
+    weak var delegate:SizePickerViewControllerDelegate?
     
-    override func viewDidLoad() {
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
         tableView.frame = view.frame
         tableView.dataSource = self
@@ -25,7 +28,8 @@ class SizePickerViewController:UIViewController, UITableViewDataSource, UITableV
         title = "Pick a Color"
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    {
         return 26
     }
     

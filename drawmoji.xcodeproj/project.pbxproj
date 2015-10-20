@@ -15,13 +15,20 @@
 		98014FD51BC1B8BE0020B48D /* DrawingPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98014FD41BC1B8BE0020B48D /* DrawingPlayerViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		98312FD41BC371C5006092FA /* SizePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98312FD31BC371C5006092FA /* SizePickerViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		98312FD61BC38C69006092FA /* DrawingCanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98312FD51BC38C69006092FA /* DrawingCanvasView.swift */; settings = {ASSET_TAGS = (); }; };
+		98620F561BD6824B00F4D9CD /* DrawingToMediaProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98620F551BD6824B00F4D9CD /* DrawingToMediaProcessor.swift */; settings = {ASSET_TAGS = (); }; };
+		9866C2261BCDA8DA00A27AE9 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9866C2251BCDA8DA00A27AE9 /* PlayerView.swift */; settings = {ASSET_TAGS = (); }; };
+		9866C22A1BCDA8E500A27AE9 /* DrawingBinaryProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 9866C2291BCDA8E500A27AE9 /* DrawingBinaryProcessor.m */; settings = {ASSET_TAGS = (); }; };
+		9866C2301BCDA8F100A27AE9 /* NSInputStream+Inbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 9866C22E1BCDA8F100A27AE9 /* NSInputStream+Inbox.m */; settings = {ASSET_TAGS = (); }; };
+		9866C2331BCDACF400A27AE9 /* NSOutputStream+Inbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 9866C2321BCDACF400A27AE9 /* NSOutputStream+Inbox.m */; settings = {ASSET_TAGS = (); }; };
+		989553D81BCEFAA30097FA7B /* test591579072.ibdr in Resources */ = {isa = PBXBuildFile; fileRef = 989553D71BCEFAA30097FA7B /* test591579072.ibdr */; settings = {ASSET_TAGS = (); }; };
 		989A2B501BC2D2E7001375CD /* Drawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B4F1BC2D2E7001375CD /* Drawing.swift */; settings = {ASSET_TAGS = (); }; };
-		989A2B521BC2E001001375CD /* DrawingBinaryProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B511BC2E001001375CD /* DrawingBinaryProcessor.swift */; settings = {ASSET_TAGS = (); }; };
 		989A2B541BC2E00E001375CD /* DrawingJsonProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B531BC2E00E001375CD /* DrawingJsonProcessor.swift */; settings = {ASSET_TAGS = (); }; };
 		989A2B5A1BC315F1001375CD /* DrawingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B571BC315F1001375CD /* DrawingViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		989A2B5B1BC315F1001375CD /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B581BC315F1001375CD /* CanvasView.swift */; settings = {ASSET_TAGS = (); }; };
 		989A2B5C1BC315F1001375CD /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B591BC315F1001375CD /* Line.swift */; settings = {ASSET_TAGS = (); }; };
 		989A2B601BC329F1001375CD /* ColorPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B5F1BC329F1001375CD /* ColorPickerViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		989C02311BD5BD30004CB588 /* DrawingPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989C02301BD5BD30004CB588 /* DrawingPlayerView.swift */; settings = {ASSET_TAGS = (); }; };
+		989C02331BD5EDA5004CB588 /* 5625b4a3e66a33ac020041b0.ibdr in Resources */ = {isa = PBXBuildFile; fileRef = 989C02321BD5EDA5004CB588 /* 5625b4a3e66a33ac020041b0.ibdr */; settings = {ASSET_TAGS = (); }; };
 		98CF93481BCBFF5400047EDA /* test826957259.ibdr in Resources */ = {isa = PBXBuildFile; fileRef = 98CF93441BCBF32C00047EDA /* test826957259.ibdr */; settings = {ASSET_TAGS = (); }; };
 		98CF93491BCBFF5700047EDA /* 561bc1d202f859ee1d0041a8.ibdr in Resources */ = {isa = PBXBuildFile; fileRef = 98CF93461BCBF9BA00047EDA /* 561bc1d202f859ee1d0041a8.ibdr */; settings = {ASSET_TAGS = (); }; };
 		98CF934C1BCC011200047EDA /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98CF934B1BCC011200047EDA /* UIColorExtension.swift */; settings = {ASSET_TAGS = (); }; };
@@ -38,13 +45,24 @@
 		98014FD41BC1B8BE0020B48D /* DrawingPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingPlayerViewController.swift; sourceTree = "<group>"; };
 		98312FD31BC371C5006092FA /* SizePickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SizePickerViewController.swift; sourceTree = "<group>"; };
 		98312FD51BC38C69006092FA /* DrawingCanvasView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingCanvasView.swift; sourceTree = "<group>"; };
+		98620F551BD6824B00F4D9CD /* DrawingToMediaProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingToMediaProcessor.swift; sourceTree = "<group>"; };
+		9866C2251BCDA8DA00A27AE9 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		9866C2271BCDA8E500A27AE9 /* drawmoji-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "drawmoji-Bridging-Header.h"; sourceTree = "<group>"; };
+		9866C2281BCDA8E500A27AE9 /* DrawingBinaryProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingBinaryProcessor.h; sourceTree = "<group>"; };
+		9866C2291BCDA8E500A27AE9 /* DrawingBinaryProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingBinaryProcessor.m; sourceTree = "<group>"; };
+		9866C22D1BCDA8F100A27AE9 /* NSInputStream+Inbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSInputStream+Inbox.h"; sourceTree = "<group>"; };
+		9866C22E1BCDA8F100A27AE9 /* NSInputStream+Inbox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSInputStream+Inbox.m"; sourceTree = "<group>"; };
+		9866C2311BCDACF400A27AE9 /* NSOutputStream+Inbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSOutputStream+Inbox.h"; sourceTree = "<group>"; };
+		9866C2321BCDACF400A27AE9 /* NSOutputStream+Inbox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSOutputStream+Inbox.m"; sourceTree = "<group>"; };
+		989553D71BCEFAA30097FA7B /* test591579072.ibdr */ = {isa = PBXFileReference; lastKnownFileType = file; path = test591579072.ibdr; sourceTree = "<group>"; };
 		989A2B4F1BC2D2E7001375CD /* Drawing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Drawing.swift; sourceTree = "<group>"; };
-		989A2B511BC2E001001375CD /* DrawingBinaryProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingBinaryProcessor.swift; sourceTree = "<group>"; };
 		989A2B531BC2E00E001375CD /* DrawingJsonProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingJsonProcessor.swift; sourceTree = "<group>"; };
 		989A2B571BC315F1001375CD /* DrawingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingViewController.swift; sourceTree = "<group>"; };
 		989A2B581BC315F1001375CD /* CanvasView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
 		989A2B591BC315F1001375CD /* Line.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
 		989A2B5F1BC329F1001375CD /* ColorPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorPickerViewController.swift; sourceTree = "<group>"; };
+		989C02301BD5BD30004CB588 /* DrawingPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingPlayerView.swift; sourceTree = "<group>"; };
+		989C02321BD5EDA5004CB588 /* 5625b4a3e66a33ac020041b0.ibdr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = 5625b4a3e66a33ac020041b0.ibdr; sourceTree = "<group>"; };
 		98CF93441BCBF32C00047EDA /* test826957259.ibdr */ = {isa = PBXFileReference; lastKnownFileType = file; path = test826957259.ibdr; sourceTree = "<group>"; };
 		98CF93461BCBF9BA00047EDA /* 561bc1d202f859ee1d0041a8.ibdr */ = {isa = PBXFileReference; lastKnownFileType = text; path = 561bc1d202f859ee1d0041a8.ibdr; sourceTree = "<group>"; };
 		98CF934B1BCC011200047EDA /* UIColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
@@ -95,6 +113,8 @@
 			children = (
 				989A2B581BC315F1001375CD /* CanvasView.swift */,
 				98312FD51BC38C69006092FA /* DrawingCanvasView.swift */,
+				9866C2251BCDA8DA00A27AE9 /* PlayerView.swift */,
+				989C02301BD5BD30004CB588 /* DrawingPlayerView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -124,10 +144,13 @@
 		9889ED131BC61B0B0098A25E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				989C02321BD5EDA5004CB588 /* 5625b4a3e66a33ac020041b0.ibdr */,
 				98CF93461BCBF9BA00047EDA /* 561bc1d202f859ee1d0041a8.ibdr */,
 				98014FA31BC16DBA0020B48D /* Assets.xcassets */,
+				9866C2271BCDA8E500A27AE9 /* drawmoji-Bridging-Header.h */,
 				98014FA81BC16DBA0020B48D /* Info.plist */,
 				98014FA51BC16DBA0020B48D /* LaunchScreen.storyboard */,
+				989553D71BCEFAA30097FA7B /* test591579072.ibdr */,
 				98CF93441BCBF32C00047EDA /* test826957259.ibdr */,
 			);
 			name = Resources;
@@ -136,9 +159,15 @@
 		9889ED141BC61B410098A25E /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				98CF934B1BCC011200047EDA /* UIColorExtension.swift */,
-				989A2B511BC2E001001375CD /* DrawingBinaryProcessor.swift */,
+				9866C2281BCDA8E500A27AE9 /* DrawingBinaryProcessor.h */,
+				9866C2291BCDA8E500A27AE9 /* DrawingBinaryProcessor.m */,
 				989A2B531BC2E00E001375CD /* DrawingJsonProcessor.swift */,
+				9866C22D1BCDA8F100A27AE9 /* NSInputStream+Inbox.h */,
+				9866C22E1BCDA8F100A27AE9 /* NSInputStream+Inbox.m */,
+				9866C2311BCDACF400A27AE9 /* NSOutputStream+Inbox.h */,
+				9866C2321BCDACF400A27AE9 /* NSOutputStream+Inbox.m */,
+				98CF934B1BCC011200047EDA /* UIColorExtension.swift */,
+				98620F551BD6824B00F4D9CD /* DrawingToMediaProcessor.swift */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -169,6 +198,7 @@
 		98014F911BC16DBA0020B48D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Hani Shabsigh";
 				TargetAttributes = {
@@ -203,6 +233,8 @@
 				98CF93481BCBFF5400047EDA /* test826957259.ibdr in Resources */,
 				98014FA71BC16DBA0020B48D /* LaunchScreen.storyboard in Resources */,
 				98014FA41BC16DBA0020B48D /* Assets.xcassets in Resources */,
+				989C02331BD5EDA5004CB588 /* 5625b4a3e66a33ac020041b0.ibdr in Resources */,
+				989553D81BCEFAA30097FA7B /* test591579072.ibdr in Resources */,
 				98CF93491BCBFF5700047EDA /* 561bc1d202f859ee1d0041a8.ibdr in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -216,13 +248,18 @@
 			files = (
 				98014F9F1BC16DBA0020B48D /* DrawingsViewController.swift in Sources */,
 				98CF934C1BCC011200047EDA /* UIColorExtension.swift in Sources */,
+				989C02311BD5BD30004CB588 /* DrawingPlayerView.swift in Sources */,
+				9866C2331BCDACF400A27AE9 /* NSOutputStream+Inbox.m in Sources */,
+				9866C2261BCDA8DA00A27AE9 /* PlayerView.swift in Sources */,
 				98312FD41BC371C5006092FA /* SizePickerViewController.swift in Sources */,
+				9866C22A1BCDA8E500A27AE9 /* DrawingBinaryProcessor.m in Sources */,
 				989A2B5B1BC315F1001375CD /* CanvasView.swift in Sources */,
+				98620F561BD6824B00F4D9CD /* DrawingToMediaProcessor.swift in Sources */,
 				989A2B501BC2D2E7001375CD /* Drawing.swift in Sources */,
 				989A2B5A1BC315F1001375CD /* DrawingViewController.swift in Sources */,
+				9866C2301BCDA8F100A27AE9 /* NSInputStream+Inbox.m in Sources */,
 				989A2B601BC329F1001375CD /* ColorPickerViewController.swift in Sources */,
 				989A2B541BC2E00E001375CD /* DrawingJsonProcessor.swift in Sources */,
-				989A2B521BC2E001001375CD /* DrawingBinaryProcessor.swift in Sources */,
 				98014FD51BC1B8BE0020B48D /* DrawingPlayerViewController.swift in Sources */,
 				98312FD61BC38C69006092FA /* DrawingCanvasView.swift in Sources */,
 				98014FD11BC1AD760020B48D /* DrawingOptionsViewController.swift in Sources */,
@@ -265,6 +302,8 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -284,7 +323,9 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_MODULE_NAME = drawmoji;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "drawmoji-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -310,6 +351,8 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -322,7 +365,9 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_MODULE_NAME = drawmoji;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "drawmoji-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -332,10 +377,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = drawmoji/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.inboxtheapp.drawmoji;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "drawmoji/drawmoji-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -343,10 +391,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = drawmoji/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.inboxtheapp.drawmoji;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "drawmoji/drawmoji-Bridging-Header.h";
 			};
 			name = Release;
 		};

@@ -8,27 +8,34 @@
 
 import UIKit
 
-protocol CanvasViewDelegate {
-    func updatedUndoRedoCounts(undoCount:Int)
-    func willForceDrawAllLines(background:Bool)
-    func didForceDrawAllLines(background:Bool)
+protocol CanvasViewDelegate:class
+{
+    func didUpdateUndoRedoCounts(undoCount:Int, redoCount:Int)
+    func willBeginForceDrawingAllLines()
+    func didFinishForceDrawingAllLines()
+    func willBeginDrawingLine()
+    func didFinishDrawingLine()
 }
 
 class CanvasView: UIControl
 {
-    // MARK: Properties
+    weak var delegate:CanvasViewDelegate?
     
-    var delegate:CanvasViewDelegate?
     var lines:[Line]
+    private var redoLines:[Line] = [Line]()
+    
     var currentColor = UIColor.blackColor()
     var currentLineWidth:CGFloat = 5.0
-    var frozenImage:CGImage?
-    var backCount:Int = 0
     
-    ///
+    private var currentFrozenImage:CGImage?
+    
+    private var undoCount:Int = 0
+    private var redoCount:Int = 0
+    
     private var activeLine:Line?
-    ///
-    private var frozenImages = [CGImageRef]()
+    
+    private var frozenUndoImages = [NSData]()
+    private var frozenRedoImages = [NSData]()
     
     /// A `CGContext` for drawing the last representation of lines no longer receiving updates into.
     private lazy var frozenContext: CGContext = {
@@ -40,48 +47,65 @@ class CanvasView: UIControl
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         
         let context = CGBitmapContextCreate(nil, Int(size.width), Int(size.height), 8, 0, colorSpace, CGImageAlphaInfo.PremultipliedLast.rawValue)
-
+        
+        CGContextScaleCTM(context, scale, scale)
+        
         CGContextSetLineCap(context, .Round)
-        let transform = CGAffineTransformMakeScale(scale, scale)
-        CGContextConcatCTM(context, transform)
         
         return context!
     }()
     
     // MARK: Override
     
-    init(frame:CGRect, lines:[Line]) {
+    init(frame:CGRect, lines:[Line])
+    {
         self.lines = lines
         super.init(frame: frame)
     }
     
-    override init(frame: CGRect) {
+    override init(frame: CGRect)
+    {
         lines = [Line]()
         super.init(frame: frame)
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder)
+    {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
+    {
+        delegate?.willBeginDrawingLine()
+        
+        redoLines.removeAll()
+        redoCount = 0
+        frozenRedoImages.removeAll()
+        
         for touch in touches {
             drawPoint(touch.locationInView(self))
         }
     }
     
-    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?)
+    {
         for touch in touches {
             drawPoint(touch.locationInView(self))
         }
     }
     
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?)
+    {
         endTouches(false)
+        
+        delegate?.didFinishDrawingLine()
     }
     
-    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
+    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?)
+    {
         endTouches(true)
+        
+        delegate?.didFinishDrawingLine()
     }
     
     // MARK: Drawing
@@ -92,12 +116,12 @@ class CanvasView: UIControl
         
         CGContextSetLineCap(context, .Round)
         
-        if let image = frozenImage {
+        if let image = currentFrozenImage {
             CGContextDrawImage(context, bounds, image)
         }
         
         if let line = activeLine {
-            line.drawInContext(context)
+            line.drawLineInContext(context)
         }
     }
     
@@ -107,47 +131,122 @@ class CanvasView: UIControl
     {
         activeLine = nil
         lines.removeAll()
-        frozenImages.removeAll()
+        redoLines.removeAll()
+        frozenUndoImages.removeAll()
+        frozenRedoImages.removeAll()
+        undoCount = 0
+        redoCount = 0
         CGContextClearRect(frozenContext, bounds)
-        frozenImage = CGBitmapContextCreateImage(frozenContext)
+        currentFrozenImage = nil
         setNeedsDisplay()
+        updateUndoRedoCounts()
     }
     
-    func back()
+    func undo()
     {
-        if backCount == 0 {
+        if undoCount == 0 {
             return
         }
         
         activeLine = nil
-        if frozenImages.count > 0 {
-            frozenImages.removeLast()
+        if frozenUndoImages.count > 0 && lines.count > 0, let lastImage = frozenUndoImages.last, let lastLine = lines.last {
+            frozenRedoImages.append(lastImage)
+            frozenUndoImages.removeLast()
+            redoLines.append(lastLine)
+            lines.removeLast()
             
-            if lines.count > 0 {
-                lines.removeLast()
+            CGContextClearRect(frozenContext, bounds)
+            if frozenUndoImages.count > 0 {
+                currentFrozenImage = UIImage(data:frozenUndoImages.last!)?.CGImage
+                CGContextDrawImage(frozenContext, bounds, currentFrozenImage)
+            } else if lines.count == 0 {
+                currentFrozenImage = nil
             }
+            setNeedsDisplay()
+            undoCount--
+            redoCount++
+            updateUndoRedoCounts()
         }
-        CGContextClearRect(frozenContext, bounds)
-        if frozenImages.count > 0 {
-            frozenImage = frozenImages.last
-            CGContextDrawImage(frozenContext, bounds, frozenImage)
-        } else if lines.count == 0 {
-            frozenImage = nil
+    }
+    
+    func undoAll()
+    {
+        if undoCount == 0 {
+            return
         }
-        setNeedsDisplay()
-        backCount--
-        updateUndoRedoCounts()
+        
+        activeLine = nil
+        if frozenUndoImages.count > 0 && lines.count > 0 {
+            frozenRedoImages.appendContentsOf(frozenUndoImages.reverse())
+            frozenUndoImages.removeAll()
+            
+            redoLines.appendContentsOf(lines.reverse())
+            lines.removeAll()
+            
+            currentFrozenImage = nil
+            
+            setNeedsDisplay()
+            undoCount = 0
+            redoCount = redoLines.count
+            updateUndoRedoCounts()
+        }
+    }
+    
+    func redo()
+    {
+        if redoCount == 0 {
+            return
+        }
+        
+        activeLine = nil
+        if frozenRedoImages.count > 0 && redoLines.count > 0, let lastImageData = frozenRedoImages.last, let lastLine = redoLines.last {
+            frozenUndoImages.append(lastImageData)
+            frozenRedoImages.removeLast()
+            lines.append(lastLine)
+            redoLines.removeLast()
+            currentFrozenImage = UIImage(data:lastImageData)?.CGImage
+            CGContextDrawImage(frozenContext, bounds, currentFrozenImage)
+            setNeedsDisplay()
+            undoCount++
+            redoCount--
+            updateUndoRedoCounts()
+        }
+    }
+    
+    func redoAll()
+    {
+        if redoCount == 0 {
+            return
+        }
+        
+        activeLine = nil
+        if frozenRedoImages.count > 0 && redoLines.count > 0 {
+            frozenUndoImages.appendContentsOf(frozenRedoImages.reverse())
+            frozenRedoImages.removeAll()
+            
+            lines.appendContentsOf(redoLines.reverse())
+            redoLines.removeAll()
+            
+            currentFrozenImage = UIImage(data:frozenUndoImages.last!)?.CGImage
+            
+            setNeedsDisplay()
+            undoCount = lines.count
+            redoCount = 0
+            updateUndoRedoCounts()
+        }
     }
     
     // MARK: Convenience
     
-    func drawPoint(point:CGPoint) {
+    func drawPoint(point:CGPoint)
+    {
         let line = activeLine ?? addActiveLine()
-        let rect = line.addPointAtLocation(point)
-        setNeedsDisplayInRect(rect)
+        line.addPointAtLocation(point)
+        setNeedsDisplay()
     }
     
-    func addActiveLine() -> Line {
+    func addActiveLine() -> Line
+    {
         let newLine = Line()
         newLine.color = currentColor
         newLine.lineWidth = currentLineWidth
@@ -159,7 +258,8 @@ class CanvasView: UIControl
         return newLine
     }
     
-    func endTouches(cancel: Bool) {
+    func endTouches(cancel: Bool)
+    {
         if let line = activeLine {
             var updateRect = CGRect.null
             
@@ -175,59 +275,52 @@ class CanvasView: UIControl
         }
     }
     
-    func finishLine(line: Line) {
-        line.drawInContext(frozenContext)
-        
-        let image = CGBitmapContextCreateImage(frozenContext)
-        if let image = image {
-            let imageAsData = UIImagePNGRepresentation(UIImage(CGImage: image))
-            if let imageAsData = imageAsData {
-                let downsampledImaged = UIImage(data:imageAsData);
-                frozenImage = downsampledImaged?.CGImage
-                frozenImages.append((downsampledImaged?.CGImage)!)
-                if frozenImages.count > 21 {
-                    frozenImages.removeFirst()
+    func finishLine(line: Line)
+    {
+        autoreleasepool {
+            line.drawLineInContext(frozenContext)
+            
+            let image = CGBitmapContextCreateImage(frozenContext)
+            if let theImage = image {
+                let imageAsData = UIImagePNGRepresentation(UIImage(CGImage: theImage))
+                if let imageAsData = imageAsData {
+                    let downsampledImaged = UIImage(data:imageAsData);
+                    currentFrozenImage = downsampledImaged?.CGImage
+                    frozenUndoImages.append(imageAsData)
+                } else {
+                    lines.removeLast()
                 }
-            } else {
-                lines.removeLast()
             }
-        }
-        
-        if backCount < 20 {
-            backCount++
+            
+            undoCount++
+        }        
+    }
+    
+    func updateUndoRedoCounts()
+    {
+        dispatch_async(dispatch_get_main_queue()) {
+            delegate?.didUpdateUndoRedoCounts(undoCount, redoCount: redoCount)
         }
     }
     
-    func updateUndoRedoCounts() {
-        if let delegate = delegate {
-            delegate.updatedUndoRedoCounts(backCount)
+    func forceDrawAllLines()
+    {
+        dispatch_async(dispatch_get_main_queue()) {
+            delegate?.willBeginForceDrawingAllLines()
         }
-    }
-    
-    func forceDrawAllLines(background:Bool) {
-        if let delegate = delegate {
-            delegate.willForceDrawAllLines(background)
-        }
-        if background {
-            dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) { // 1
-                for line in self.lines {
-                    self.finishLine(line)
-                }
-                dispatch_async(dispatch_get_main_queue()) { // 2
-                    self.setNeedsDisplay()
-                    if let delegate = self.delegate {
-                        delegate.didForceDrawAllLines(background)
-                    }
-                }
-            }
-        } else {
+        dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
             for line in self.lines {
-                finishLine(line)
+                self.finishLine(line)
             }
-            setNeedsDisplay()
-            if let delegate = delegate {
-                delegate.didForceDrawAllLines(background)
+            dispatch_async(dispatch_get_main_queue()) {
+                self.setNeedsDisplay()
+                self.delegate?.didFinishForceDrawingAllLines()
+                self.delegate?.didUpdateUndoRedoCounts(self.undoCount, redoCount: self.redoCount)
             }
         }
+    }
+    
+    deinit {
+        print("CanvasView deinit")
     }
 }

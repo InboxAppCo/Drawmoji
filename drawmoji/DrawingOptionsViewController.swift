@@ -59,19 +59,19 @@ class DrawingOptionsViewController: UIViewController
     
     func gallery()
     {
-        let drawingViewController = DrawingViewController()
+        let drawingViewController = DrawingViewController(drawing: nil)
         navigationController?.pushViewController(drawingViewController, animated: true)
     }
     
     func web ()
     {
-        let drawingViewController = DrawingViewController()
+        let drawingViewController = DrawingViewController(drawing: nil)
         navigationController?.pushViewController(drawingViewController, animated: true)
     }
     
     func canvas ()
     {
-        let drawingViewController = DrawingViewController()
+        let drawingViewController = DrawingViewController(drawing: nil)
         navigationController?.pushViewController(drawingViewController, animated: true)
     }
 }

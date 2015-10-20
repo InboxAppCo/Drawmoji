@@ -8,14 +8,30 @@
 
 import UIKit
 
-class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerViewControllerDelegate, SizePickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerViewControllerDelegate, SizePickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, DrawingCanvasViewDelegate {
     // MARK: Properties
     
     var imagePicker:UIImagePickerController? = nil
     var topToolbar:UIToolbar = UIToolbar()
     var bottomToolbar:UIToolbar = UIToolbar()
-    var drawingCanvasView:DrawingCanvasView?
-    var drawing:Drawing?
+    private var drawingCanvasView:DrawingCanvasView?
+    private var drawing:Drawing?
+    var undoCountButton:UIBarButtonItem?
+    var undoButton:UIBarButtonItem?
+    var redoButton:UIBarButtonItem?
+    var redoCountButton:UIBarButtonItem?
+    var activityIndicator:UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
+    
+    // MARK: Inititialization
+    
+    internal init(drawing:Drawing?) {
+        self.drawing = drawing
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: View Life Cycle
     
@@ -35,13 +51,17 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
         automaticallyAdjustsScrollViewInsets = false
         
         if let drawing = drawing {
-            drawingCanvasView = DrawingCanvasView(drawing: drawing)
-            let size = drawingCanvasView?.frame.size
-            drawingCanvasView?.frame = CGRect(origin: CGPoint(x: 0, y: 108), size: size!)
+            let size = CGSizeMake(view.frame.size.width, view.frame.size.height - 152)
+            let newDrawing = Drawing.aspectFitDrawingInSize(drawing, size:size)
+            
+            let x = (size.width - CGFloat(newDrawing.width))/2
+            let y = (size.height - CGFloat(newDrawing.height))/2 + 108
+            drawingCanvasView = DrawingCanvasView(drawing: newDrawing, frame: CGRect(x: x, y: y, width: CGFloat(newDrawing.width), height: CGFloat(newDrawing.height)))
         } else {
             drawingCanvasView = DrawingCanvasView(frame: CGRect(x: 0, y: 108, width: view.frame.size.width, height: view.frame.size.height-152))
         }
         view.addSubview(drawingCanvasView!)
+        drawingCanvasView!.delegate = self
         drawingCanvasView!.forceDrawAllLines()
         
         topToolbar.frame = CGRect(x: 0, y: 64, width: view.frame.size.width, height: 44)
@@ -60,12 +80,18 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
         bottomToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil))
         bottomToolbarButtons.append(UIBarButtonItem(title: "Share", style: .Plain, target: self, action: "share:"))
         bottomToolbar.setItems(bottomToolbarButtons, animated:false)
+        
+        activityIndicator.center = CGPoint(x: view.center.x, y: view.center.y + 44)
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.hidden = true
+        view.addSubview(activityIndicator)
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
         imagePicker = UIImagePickerController()
+        imagePicker?.delegate = self
         imagePicker?.allowsEditing = false
     }
     
@@ -75,8 +101,20 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
         drawingCanvasView?.clear()
     }
     
-    func back(sender: UIBarButtonItem) {
-        drawingCanvasView?.back()
+    func undo(sender: UIBarButtonItem) {
+        drawingCanvasView?.undo()
+    }
+    
+    func undoAll(sender: UIBarButtonItem) {
+        drawingCanvasView?.undoAll()
+    }
+    
+    func redo(sender: UIBarButtonItem) {
+        drawingCanvasView?.redo()
+    }
+    
+    func redoAll(sender: UIBarButtonItem) {
+        drawingCanvasView?.redoAll()
     }
     
     func play(sender: UIBarButtonItem) {
@@ -141,6 +179,13 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
         }
         alertController.addAction(searchAction)
         
+        if let _ = drawingCanvasView?.getDrawing().backgroundImage {
+            let removeAction = UIAlertAction(title: "Remove Background", style: .Default) { (action) in
+                self.drawingCanvasView?.setBackgroundImage(nil)
+            }
+            alertController.addAction(removeAction)
+        }
+        
         self.presentViewController(alertController, animated: true) { }
     }
     
@@ -153,7 +198,13 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
         alertController.addAction(cancelAction)
         
         let galleryAction = UIAlertAction(title: "Image", style: .Default) { (action) in
-            
+            if let drawing = self.drawingCanvasView?.getDrawing() {
+                let image = DrawingToMediaProcessor.imageFromDrawing(drawing)
+                
+                let activity = UIActivityViewController(activityItems: [image!], applicationActivities: nil)
+                
+                self.presentViewController(activity, animated: true, completion: nil)
+            }
         }
         alertController.addAction(galleryAction)
         
@@ -197,10 +248,37 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
         drawingCanvasView?.setCurrentLineWidth(size)
     }
     
-    // MARK: CanvasViewDelegate
+    // MARK: DrawingCanvasViewDelegate
     
-    func updatedUndoRedoCounts(undoCount: Int) {
-        print("undo count:\(undoCount)")
+    func didUpdateUndoRedoCounts(undoCount: Int, redoCount: Int) {
+        print("undo count:\(undoCount) redo count:\(redoCount)")
+        
+        if undoCount > 0 {
+            undoButton?.enabled = true
+            undoCountButton?.title = "\(undoCount)"
+        } else {
+            undoButton?.enabled = false
+            undoCountButton?.title = ""
+        }
+        
+        if redoCount > 0 {
+            redoButton?.enabled = true
+            redoCountButton?.title = "\(redoCount)"
+        } else {
+            redoButton?.enabled = false
+            redoCountButton?.title = ""
+        }
+    }
+    
+    func willBeginForceDrawingAllLines() {
+        drawingCanvasView?.hidden = true
+        activityIndicator.startAnimating()
+        activityIndicator.hidden = false
+    }
+    
+    func didFinishForceDrawingAllLines() {
+        activityIndicator.stopAnimating()
+        drawingCanvasView?.hidden = false
     }
     
     // MARK: UIImagePickerControllerDelegate Methods
@@ -217,18 +295,28 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
     // MARK: Bar Button Items
     
     func setTopToolbarButtonItemsForPlaying(animated:Bool) {
-        //let fixedSpaceBarButtonItem = UIBarButtonItem(barButtonSystemItem: .FixedSpace, target: nil, action: nil)
-        //fixedSpaceBarButtonItem.width = 15.0
+        let fixedSpaceBarButtonItem = UIBarButtonItem(barButtonSystemItem: .FixedSpace, target: nil, action: nil)
+        fixedSpaceBarButtonItem.width = 15.0
         
         var topToolbarButtons = [UIBarButtonItem]()
         topToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: "clearView:"))
-        topToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .Rewind, target: self, action: "back:"))
         topToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil))
-        //topToolbarButtons.append(fixedSpaceBarButtonItem)
+        undoCountButton = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: self, action: "undoAll:")
+        undoCountButton?.width = 20.0
+        topToolbarButtons.append(undoCountButton!)
+        undoButton = UIBarButtonItem(barButtonSystemItem: .Rewind, target: self, action: "undo:")
+        undoButton?.enabled = false
+        topToolbarButtons.append(undoButton!)
+        topToolbarButtons.append(fixedSpaceBarButtonItem)
         //topToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .Play, target: self, action: "play:"))
         //topToolbarButtons.append(fixedSpaceBarButtonItem)
-        //topToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .FastForward, target: self, action: "forward:"))
-        //topToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil))
+        redoButton = UIBarButtonItem(barButtonSystemItem: .FastForward, target: self, action: "redo:")
+        redoButton?.enabled = false
+        topToolbarButtons.append(redoButton!)
+        redoCountButton = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: self, action: "redoAll:")
+        redoCountButton?.width = 20.0
+        topToolbarButtons.append(redoCountButton!)
+        topToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil))
         topToolbarButtons.append(UIBarButtonItem(title: "Size", style: .Plain, target: self, action: "changeSize:"))
         topToolbarButtons.append(UIBarButtonItem(title: "Color", style: .Plain, target: self, action: "changeColor:"))
         topToolbar.setItems(topToolbarButtons, animated: animated)
@@ -240,5 +328,9 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
         topToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .Stop, target: self, action: "stop:"))
         topToolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil))
         topToolbar.setItems(topToolbarButtons, animated: animated)
+    }
+    
+    deinit {
+        print("DrawingViewController deinit")
     }
 }
