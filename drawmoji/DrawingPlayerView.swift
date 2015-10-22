@@ -18,11 +18,11 @@ class DrawingPlayerView:UIView
 {
     private(set) var backgroundImageView:UIImageView
     private var playerView:PlayerView
-    private var drawing:Drawing
+    var drawing:Drawing
     private var hiddenDelegate:DrawingPlayerViewDelegateHandler?
     weak var delegate:DrawingPlayerViewDelegate?
     
-    init(drawing:Drawing, frame:CGRect)
+    init(drawing:Drawing, frame:CGRect, finishedImage:UIImage?)
     {
         self.drawing = drawing
         
@@ -31,7 +31,7 @@ class DrawingPlayerView:UIView
         backgroundImageView.clipsToBounds = true
         backgroundImageView.image = drawing.backgroundImage
         
-        playerView = PlayerView(frame: CGRect(origin:CGPointZero, size:frame.size), drawing:drawing, finishedImage:nil)
+        playerView = PlayerView(frame: CGRect(origin:CGPointZero, size:frame.size), drawing:drawing, finishedImage:finishedImage)
         playerView.backgroundColor = UIColor.clearColor()
 
         super.init(frame:frame)
@@ -44,23 +44,7 @@ class DrawingPlayerView:UIView
     
     override init(frame: CGRect)
     {
-        drawing = Drawing()
-        drawing.width = Int(frame.width)
-        drawing.height = Int(frame.height)
-        
-        backgroundImageView = UIImageView(frame: CGRect(origin: CGPointZero, size: frame.size))
-        backgroundImageView.contentMode = UIViewContentMode.ScaleAspectFit
-        backgroundImageView.clipsToBounds = true
-        
-        playerView = PlayerView(frame: CGRect(origin:CGPointZero, size:frame.size), drawing:drawing, finishedImage:nil)
-        playerView.backgroundColor = UIColor.clearColor()
-        
-        super.init(frame: frame)
-        
-        addSubview(backgroundImageView)
-        addSubview(playerView)
-        hiddenDelegate = DrawingPlayerViewDelegateHandler(outer: self)
-        playerView.delegate = hiddenDelegate
+        fatalError("init(frame:) has not been implemented")
     }
     
     required init?(coder aDecoder: NSCoder)
@@ -125,7 +109,7 @@ private class DrawingPlayerViewDelegateHandler:NSObject, PlayerViewDelegate {
     
     // MARK: CanvasViewDelegate
     
-    func didUpdatePlaybackSpeed(multiplier: Int)
+    func didUpdatePlaybackSpeed(multiplier:Int)
     {
         outer?.delegate?.didUpdatePlaybackSpeed?(multiplier)
     }

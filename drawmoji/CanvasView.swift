@@ -10,11 +10,15 @@ import UIKit
 
 protocol CanvasViewDelegate:class
 {
+    func willBeginDrawingLine(line:Line)
+    func didFinishDrawingLine(line:Line)
+  
     func didUpdateUndoRedoCounts(undoCount:Int, redoCount:Int)
+    func didUndoLine(line:Line)
+    func didRedoLine(line:Line)
+  
     func willBeginForceDrawingAllLines()
     func didFinishForceDrawingAllLines()
-    func willBeginDrawingLine()
-    func didFinishDrawingLine()
 }
 
 class CanvasView: UIControl
@@ -36,6 +40,8 @@ class CanvasView: UIControl
     
     private var frozenUndoImages = [NSData]()
     private var frozenRedoImages = [NSData]()
+  
+    private var isForceDrawingAllLines:Bool = false
     
     /// A `CGContext` for drawing the last representation of lines no longer receiving updates into.
     private lazy var frozenContext: CGContext = {
@@ -76,52 +82,54 @@ class CanvasView: UIControl
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
     {
-        delegate?.willBeginDrawingLine()
+        let line = activeLine ?? addActiveLine()
+      
+        delegate?.willBeginDrawingLine(line)
         
         redoLines.removeAll()
         redoCount = 0
         frozenRedoImages.removeAll()
         
         for touch in touches {
-            drawPoint(touch.locationInView(self))
+            drawPoint(touch.locationInView(self), line:line)
         }
     }
     
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?)
     {
+        let line = activeLine ?? addActiveLine()
+      
         for touch in touches {
-            drawPoint(touch.locationInView(self))
+            drawPoint(touch.locationInView(self), line:line)
         }
     }
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?)
     {
         endTouches(false)
-        
-        delegate?.didFinishDrawingLine()
     }
     
     override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?)
     {
         endTouches(true)
-        
-        delegate?.didFinishDrawingLine()
     }
     
     // MARK: Drawing
     
     override func drawRect(rect: CGRect)
     {
-        let context = UIGraphicsGetCurrentContext()!
+        if !isForceDrawingAllLines {
+            let context = UIGraphicsGetCurrentContext()!
         
-        CGContextSetLineCap(context, .Round)
+            CGContextSetLineCap(context, .Round)
         
-        if let image = currentFrozenImage {
-            CGContextDrawImage(context, bounds, image)
-        }
+            if let image = currentFrozenImage {
+                CGContextDrawImage(context, bounds, image)
+            }
         
-        if let line = activeLine {
-            line.drawLineInContext(context)
+            if let line = activeLine {
+                line.drawLineInContext(context)
+            }
         }
     }
     
@@ -166,6 +174,7 @@ class CanvasView: UIControl
             undoCount--
             redoCount++
             updateUndoRedoCounts()
+            delegate?.didUndoLine(lastLine)
         }
     }
     
@@ -210,6 +219,7 @@ class CanvasView: UIControl
             undoCount++
             redoCount--
             updateUndoRedoCounts()
+            delegate?.didUndoLine(lastLine)
         }
     }
     
@@ -237,10 +247,9 @@ class CanvasView: UIControl
     }
     
     // MARK: Convenience
-    
-    func drawPoint(point:CGPoint)
+  
+    func drawPoint(point:CGPoint, line:Line)
     {
-        let line = activeLine ?? addActiveLine()
         line.addPointAtLocation(point)
         setNeedsDisplay()
     }
@@ -266,7 +275,9 @@ class CanvasView: UIControl
             if cancel { updateRect.unionInPlace(line.cancel()) }
             
             finishLine(line)
-            
+          
+            delegate?.didFinishDrawingLine(line)
+          
             activeLine = nil
             
             setNeedsDisplay()
@@ -305,6 +316,7 @@ class CanvasView: UIControl
     
     func forceDrawAllLines()
     {
+        isForceDrawingAllLines = true
         dispatch_async(dispatch_get_main_queue()) {
             self.delegate?.willBeginForceDrawingAllLines()
         }
@@ -316,6 +328,7 @@ class CanvasView: UIControl
                 self.setNeedsDisplay()
                 self.delegate?.didFinishForceDrawingAllLines()
                 self.delegate?.didUpdateUndoRedoCounts(self.undoCount, redoCount: self.redoCount)
+                self.isForceDrawingAllLines = false
             }
         }
     }

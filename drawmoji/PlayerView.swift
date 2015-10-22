@@ -104,25 +104,26 @@ class PlayerView:UIView
                 newFrozenImage = CGBitmapContextCreateImage(self.frozenContext)
                 if let frozenImage = newFrozenImage {
                     self.finishedImage = UIImage(CGImage:frozenImage)
-                    self.delegate?.didFinishPlayback(UIImage(CGImage:frozenImage))
                 } else {
                     UIGraphicsBeginImageContextWithOptions(self.bounds.size, true, 0);
                     self.drawViewHierarchyInRect(self.bounds, afterScreenUpdates: true)
                     let newFrozenUIImage = UIGraphicsGetImageFromCurrentImageContext();
                     UIGraphicsEndImageContext();
                     self.finishedImage = newFrozenUIImage
-                    self.delegate?.didFinishPlayback(newFrozenUIImage)
                 }
             }
-            
-            if self.isPlaying {
-                dispatch_async(dispatch_get_main_queue()) {
-                    if let frozenImage = newFrozenImage {
-                        self.layer.contents = frozenImage
-                    }
-                    
-                    self.performSelector(Selector("draw"), withObject: nil, afterDelay: 0.020)
+          
+            dispatch_async(dispatch_get_main_queue()) {
+              if self.isPlaying {
+                
+                if let frozenImage = newFrozenImage {
+                  self.layer.contents = frozenImage
                 }
+                
+                self.performSelector(Selector("draw"), withObject: nil, afterDelay: 0.020)
+              } else {
+                self.delegate?.didFinishPlayback(self.finishedImage!)
+              }
             }
         }
     }
@@ -295,7 +296,8 @@ class PlayerView:UIView
     
     private func pointsPerFrame(pointCount:Int, duration:Double, frameRate:Int) -> Int
     {
-        return pointCount / Int(duration * Double(frameRate));
+        let ppf = pointCount / Int(duration * Double(frameRate))
+        return max(ppf,1)
     }
     
     deinit {

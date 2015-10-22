@@ -10,11 +10,15 @@ import UIKit
 
 @objc protocol DrawingCanvasViewDelegate:class
 {
-    optional func didUpdateUndoRedoCounts(undoCount:Int, redoCount:Int)
-    optional func willBeginForceDrawingAllLines()
-    optional func didFinishForceDrawingAllLines()
-    optional func willBeginDrawingLine()
-    optional func didFinishDrawingLine()
+  optional func drawingCanvasView(drawingCanvasView:DrawingCanvasView, willBeginDrawingLine:Line)
+  optional func drawingCanvasView(drawingCanvasView:DrawingCanvasView, didFinishDrawingLine:Line)
+  
+  optional func drawingCanvasView(drawingCanvasView:DrawingCanvasView, didUpdateUndoCount:Int, redoCount:Int)
+  optional func drawingCanvasView(drawingCanvasView:DrawingCanvasView, didUndoLine:Line)
+  optional func drawingCanvasView(drawingCanvasView:DrawingCanvasView, didRedoLine:Line)
+  
+  optional func drawingCanvasViewWillBeginForceDrawingAllLines(drawingCanvasView:DrawingCanvasView)
+  optional func drawingCanvasViewDidFinishForceDrawingAllLines(drawingCanvasView:DrawingCanvasView)
 }
 
 class DrawingCanvasView:UIView, UIScrollViewDelegate
@@ -178,26 +182,36 @@ private class DrawingCanvasViewDelegateHandler:NSObject, CanvasViewDelegate {
     
     func didUpdateUndoRedoCounts(undoCount: Int, redoCount: Int)
     {
-        outer?.delegate?.didUpdateUndoRedoCounts?(undoCount, redoCount: redoCount)
+        outer?.delegate?.drawingCanvasView?(outer!, didUpdateUndoCount: undoCount, redoCount: redoCount)
     }
     
     func willBeginForceDrawingAllLines()
     {
-        outer?.delegate?.willBeginForceDrawingAllLines?()
+        outer?.delegate?.drawingCanvasViewWillBeginForceDrawingAllLines?(outer!)
     }
     
     func didFinishForceDrawingAllLines()
     {
-        outer?.delegate?.didFinishForceDrawingAllLines?()
+        outer?.delegate?.drawingCanvasViewDidFinishForceDrawingAllLines?(outer!)
     }
     
-    func willBeginDrawingLine()
+    func willBeginDrawingLine(line: Line)
     {
-        outer?.delegate?.willBeginDrawingLine?()
+        outer?.delegate?.drawingCanvasView?(outer!, willBeginDrawingLine:line)
     }
     
-    func didFinishDrawingLine()
+    func didFinishDrawingLine(line: Line)
     {
-        outer?.delegate?.didFinishDrawingLine?()
+        outer?.delegate?.drawingCanvasView?(outer!, didFinishDrawingLine:line)
     }
+  
+  func didUndoLine(line: Line)
+  {
+    outer?.delegate?.drawingCanvasView?(outer!, didUndoLine:line)
+  }
+  
+  func didRedoLine(line: Line)
+  {
+    outer?.delegate?.drawingCanvasView?(outer!, didRedoLine:line)
+  }
 }
