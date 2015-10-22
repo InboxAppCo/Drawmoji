@@ -12,6 +12,12 @@
 
 @implementation NSInputStream (Inbox)
 
+- (void)skip:(NSUInteger)maxLength
+{
+    uintmax_t value = 0;
+    [self read:(uint8_t *)&value maxLength:maxLength];
+}
+
 - (Byte)readByte
 {
     Byte value = 0;

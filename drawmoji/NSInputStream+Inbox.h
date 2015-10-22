@@ -10,6 +10,7 @@
 
 @interface NSInputStream (Inbox)
 
+- (void)skip:(NSUInteger)maxLength;
 - (Byte)readByte;
 - (uint8_t)readInt8;
 - (uint16_t)readInt16:(BOOL)bigEndian;

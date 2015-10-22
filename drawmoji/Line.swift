@@ -8,12 +8,49 @@
 
 import UIKit
 
-class Line: NSObject {
+class Line: NSObject
+{
     // MARK: Properties
     
     var points = [CGPoint]()
-    var color:UIColor = UIColor.blackColor()
+    var brushType:Int = 0
     var lineWidth:CGFloat = 5.0
+    var color:UIColor = UIColor.blackColor()
+    
+    // MARK: Init
+    
+    override init()
+    {
+        
+    }
+    
+    convenience init(points:[CGPoint], brushType:Int, lineWidth:CGFloat, color:UIColor)
+    {
+        self.init()
+        self.points = points
+        self.brushType = brushType
+        self.lineWidth = lineWidth
+        self.color = color
+    }
+    
+    // MARK: NSCoding
+    
+    required convenience init?(coder aDecoder: NSCoder)
+    {
+        self.init()
+        points = convertNSArrayOfNSValuesToArrayOfCGPoints(aDecoder.decodeObjectForKey("points") as! NSArray)
+        brushType = aDecoder.decodeObjectForKey("brushType") as! Int
+        lineWidth = aDecoder.decodeObjectForKey("lineWidth") as! CGFloat
+        color = aDecoder.decodeObjectForKey("color") as! UIColor
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder)
+    {
+        aCoder.encodeObject(convertArrayOfCGPointsToNSArrayOfNSValues(points), forKey: "points")
+        aCoder.encodeObject(brushType, forKey: "brushType")
+        aCoder.encodeObject(lineWidth, forKey: "lineWidth")
+        aCoder.encodeObject(color, forKey: "color")
+    }
     
     // MARK: Interface
     
@@ -32,6 +69,28 @@ class Line: NSObject {
     
     func getPointCount() -> Int {
         return points.count
+    }
+    
+    func getPointsArrayOfNSValues() -> NSArray {
+        return convertArrayOfCGPointsToNSArrayOfNSValues(points)
+    }
+    
+    private func convertArrayOfCGPointsToNSArrayOfNSValues(array:[CGPoint]) -> NSArray
+    {
+        let nsarray = NSMutableArray()
+        for point in array {
+            nsarray.addObject(NSValue(CGPoint:point))
+        }
+        return nsarray;
+    }
+    
+    private func convertNSArrayOfNSValuesToArrayOfCGPoints(nsarray:NSArray) -> [CGPoint]
+    {
+        var array:[CGPoint] = [CGPoint]()
+        for value in nsarray {
+            array.append(value.CGPointValue)
+        }
+        return array
     }
     
     // MARK: Drawing

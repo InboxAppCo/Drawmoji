@@ -160,7 +160,7 @@ class DrawingCanvasView:UIView, UIScrollViewDelegate
     }
     
     deinit {
-        print("DrawingCanvasView deinit")
+        
     }
 }
 

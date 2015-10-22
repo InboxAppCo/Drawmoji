@@ -12,12 +12,12 @@
 
 - (void)writeByte:(Byte)value
 {
-    [self writeByte:value];
+    [self write:&value maxLength:1];
 }
 
 - (void)writeInt8:(uint8_t)value
 {
-    [self write:&value maxLength:2];
+    [self write:&value maxLength:1];
 }
 
 - (void)writeInt16:(uint16_t)value bigEndian:(BOOL)bigEndian

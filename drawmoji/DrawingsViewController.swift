@@ -56,27 +56,27 @@ class DrawingsViewController: UIViewController, UICollectionViewDataSource, UICo
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         /// Binary
         
-//                let path = NSBundle.mainBundle().pathForResource("test591579072", ofType:"ibdr")
-//                let data = NSData(contentsOfFile:path!)
-//                let drawing = Drawing.parseBinaryDrawingFromData(data!)
+//        let path = NSBundle.mainBundle().pathForResource("test591579072", ofType:"ibdr")
+//        let data = NSData(contentsOfFile:path!)
+//        let drawing = Drawing.parseDrawingFromData(data!, image:nil)
 //        
-//                let drawingPlayerController = DrawingPlayerViewController(drawing: drawing)
-//                presentViewController(UINavigationController.init(rootViewController: drawingPlayerController), animated: true, completion: nil)
-        
+//        let drawingPlayerController = DrawingPlayerViewController(drawing: drawing)
+//        presentViewController(UINavigationController.init(rootViewController: drawingPlayerController), animated: true, completion: nil)
+//        
         ///// JSON
         
-                let path = NSBundle.mainBundle().pathForResource("5625b4a3e66a33ac020041b0", ofType:"ibdr")
-                let image = UIImage(named: "12084f92af826bd96cc72fb19a829a3e")
-                let JSONData = NSData(contentsOfFile:path!)
-                do {
-                    let JSON = try NSJSONSerialization.JSONObjectWithData(JSONData!, options:NSJSONReadingOptions(rawValue: 0))
-                    let drawing = Drawing.parseLegacyDrawingFromJson(JSON["paths"] as! NSArray, height: JSON["height"] as! NSInteger, width: JSON["width"] as! NSInteger, lineWidth: JSON["line_width"] as! CGFloat, image: image)
-                    let drawingPlayerController = DrawingPlayerViewController(drawing: drawing)
-                    presentViewController(UINavigationController.init(rootViewController: drawingPlayerController), animated: true, completion: nil)
-                }
-                catch let JSONError as NSError {
-                    print("\(JSONError)")
-                }
+        let path = NSBundle.mainBundle().pathForResource("5625b4a3e66a33ac020041b0", ofType:"ibdr")
+        let image = UIImage(named: "12084f92af826bd96cc72fb19a829a3e")
+        let JSONData = NSData(contentsOfFile:path!)
+        if let theJSONData = JSONData {
+            let drawing = Drawing.parseDrawingFromData(theJSONData, image: image)
+            let newData = Drawing.writeDataFromDrawing(drawing!, legacy:true)
+            let newDrawing = Drawing.parseDrawingFromData(newData!, image: image)
+            let newerData = Drawing.writeDataFromDrawing(newDrawing!, legacy: false)
+            let newerDrawing = Drawing.parseDrawingFromData(newerData!, image:nil)
+            let drawingPlayerController = DrawingPlayerViewController(drawing: newerDrawing)
+            presentViewController(UINavigationController.init(rootViewController: drawingPlayerController), animated: true, completion: nil)
+        }
     }
     
     func compose() {
@@ -84,7 +84,7 @@ class DrawingsViewController: UIViewController, UICollectionViewDataSource, UICo
         
 //        let path = NSBundle.mainBundle().pathForResource("test591579072", ofType:"ibdr")
 //        let data = NSData(contentsOfFile:path!)
-//        let drawing = Drawing.parseBinaryDrawingFromData(data!)
+//        let drawing = Drawing.parseDrawingFromData(data!, image:nil)
 //        
 //        let drawingController = DrawingViewController(drawing: drawing)
 //        presentViewController(UINavigationController.init(rootViewController: drawingController), animated: true, completion: nil)
@@ -94,14 +94,10 @@ class DrawingsViewController: UIViewController, UICollectionViewDataSource, UICo
         let path = NSBundle.mainBundle().pathForResource("5625b4a3e66a33ac020041b0", ofType:"ibdr")
         let image = UIImage(named: "12084f92af826bd96cc72fb19a829a3e")
         let JSONData = NSData(contentsOfFile:path!)
-        do {
-            let JSON = try NSJSONSerialization.JSONObjectWithData(JSONData!, options:NSJSONReadingOptions(rawValue: 0))
-            let drawing = Drawing.parseLegacyDrawingFromJson(JSON["paths"] as! NSArray, height: JSON["height"] as! NSInteger, width: JSON["width"] as! NSInteger, lineWidth: JSON["line_width"] as! CGFloat, image: image)
+        if let theJSONData = JSONData {
+            let drawing = Drawing.parseDrawingFromData(theJSONData, image: image)
             let drawingController = DrawingViewController(drawing: drawing)
             presentViewController(UINavigationController.init(rootViewController: drawingController), animated: true, completion: nil)
-        }
-        catch let JSONError as NSError {
-            print("\(JSONError)")
         }
         
         ///// Blank Canvas

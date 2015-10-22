@@ -299,14 +299,14 @@ class CanvasView: UIControl
     func updateUndoRedoCounts()
     {
         dispatch_async(dispatch_get_main_queue()) {
-            delegate?.didUpdateUndoRedoCounts(undoCount, redoCount: redoCount)
+            self.delegate?.didUpdateUndoRedoCounts(self.undoCount, redoCount: self.redoCount)
         }
     }
     
     func forceDrawAllLines()
     {
         dispatch_async(dispatch_get_main_queue()) {
-            delegate?.willBeginForceDrawingAllLines()
+            self.delegate?.willBeginForceDrawingAllLines()
         }
         dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
             for line in self.lines {
@@ -321,6 +321,6 @@ class CanvasView: UIControl
     }
     
     deinit {
-        print("CanvasView deinit")
+    
     }
 }

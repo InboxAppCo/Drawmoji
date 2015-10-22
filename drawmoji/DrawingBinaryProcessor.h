@@ -12,6 +12,6 @@
 @interface DrawingBinaryProcessor : NSObject
 
 + (Drawing *)decodeDrawingFromData:(NSData *)data;
-+ (NSData *)writeDataFromDrawing:(Drawing *)drawing;
++ (NSData *)encodeDrawingToData:(Drawing *)drawing;
 
 @end

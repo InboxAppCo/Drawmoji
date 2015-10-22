@@ -9,22 +9,75 @@
 import Foundation
 import UIKit
 
-class Drawing:NSObject {
+class Drawing:NSObject, NSCoding
+{
+    // MARK: Properties
     
     var lines:[Line] = [Line]()
-    var height:Int = 0
     var width:Int = 0
+    var height:Int = 0
     var backgroundImage:UIImage?
     
-    class func parseLegacyDrawingFromJson(paths:NSArray,height:NSInteger,width:NSInteger,lineWidth:CGFloat,image:UIImage?) -> Drawing? {
-        if let theDrawing = DrawingJsonProcessor.decodeDrawingFromFile(paths, height: height, width: width, lineWidth: lineWidth, image: image) {
-            return theDrawing
+    // MARK: Init
+    
+    override init()
+    {
+        
+    }
+    
+    convenience init(lines:[Line], width:Int, height:Int, backgroundImage:UIImage?)
+    {
+        self.init()
+        self.lines = lines
+        self.width = width
+        self.height = height
+        self.backgroundImage = backgroundImage
+    }
+    
+    // MARK: NSCoding
+    
+    required convenience init?(coder aDecoder: NSCoder)
+    {
+        self.init()
+        lines = aDecoder.decodeObjectForKey("lines") as! [Line]
+        width = aDecoder.decodeObjectForKey("width") as! Int
+        height = aDecoder.decodeObjectForKey("height") as! Int
+        backgroundImage = aDecoder.decodeObjectForKey("backgroundImage") as? UIImage
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder)
+    {
+        aCoder.encodeObject(lines, forKey: "lines")
+        aCoder.encodeObject(width, forKey: "width")
+        aCoder.encodeObject(height, forKey: "height")
+        aCoder.encodeObject(backgroundImage, forKey: "backgroundImage")
+    }
+    
+    // MARK: Class Functionsxb
+    
+    class func parseDrawingFromData(data:NSData, image:UIImage?) -> Drawing?
+    {
+        var magic: UInt32 = 0
+        data.getBytes(&magic, length:4)
+        let flipped = CFSwapInt32HostToBig(magic)
+        if flipped == 0xF0E1D2C3 {
+            return parseBinaryDrawingFromData(data)
         } else {
-            return nil
+            return parseLegacyDrawingFromJson(data, image: image)
         }
     }
     
-    class func parseBinaryDrawingFromData(data:NSData) -> Drawing? {
+    class func writeDataFromDrawing(drawing:Drawing, legacy:Bool) -> NSData?
+    {
+        if !legacy {
+            return writeDrawingToBinaryFile(drawing)
+        } else {
+            return writeDrawingToJsonFile(drawing)
+        }
+    }
+    
+    private class func parseBinaryDrawingFromData(data:NSData) -> Drawing?
+    {
         if let theDrawing = DrawingBinaryProcessor.decodeDrawingFromData(data) {
             return theDrawing
         } else {
@@ -32,19 +85,40 @@ class Drawing:NSObject {
         }
     }
     
-//    class func writeDrawingToFile(drawing:Drawing,file:NSData,legacy:Bool) -> Bool {
-//        if legacy {
-//            
-//        } else {
-//            
-//        }
-//    }
+    private class func parseLegacyDrawingFromJson(data:NSData, image:UIImage?) -> Drawing?
+    {
+        if let theDrawing = DrawingJsonProcessor.decodeDrawingFromData(data, image:image) {
+            return theDrawing
+        } else {
+            return nil
+        }
+    }
     
-    func addLine(line:Line) {
+    private class func writeDrawingToBinaryFile(drawing:Drawing) -> NSData?
+    {
+        if let theData = DrawingBinaryProcessor.encodeDrawingToData(drawing) {
+            return theData
+        } else {
+            return nil
+        }
+    }
+    
+    private class func writeDrawingToJsonFile(drawing:Drawing) -> NSData?
+    {
+        if let theDrawing = DrawingJsonProcessor.encodeDrawingToData(drawing) {
+            return theDrawing
+        } else {
+            return nil
+        }
+    }
+    
+    func addLine(line:Line)
+    {
         lines.append(line)
     }
     
-    func pointCount() -> Int {
+    func pointCount() -> Int
+    {
         var pointCount:Int = 0
         for line in lines {
             pointCount = pointCount + line.points.count
@@ -52,7 +126,8 @@ class Drawing:NSObject {
         return pointCount
     }
     
-    func lineForPoint(pointCount:Int) -> (line:Line?, pointCountInLine:Int) {
+    func lineForPoint(pointCount:Int) -> (line:Line?, pointCountInLine:Int)
+    {
         var pointsCounted = 0
         var theLine:Line?
         var pointCountInLine:Int = 0
@@ -68,7 +143,8 @@ class Drawing:NSObject {
         return (theLine, pointCountInLine)
     }
     
-    class func aspectFitDrawingInSize(drawing:Drawing, size:CGSize) -> Drawing {
+    class func aspectFitDrawingInSize(drawing:Drawing, size:CGSize) -> Drawing
+    {
         let originalWidthFloat = CGFloat(drawing.width)
         let originalHeightFloat = CGFloat(drawing.height)
         
@@ -93,7 +169,8 @@ class Drawing:NSObject {
         return newDrawing;
     }
     
-    private class func scaleToAspectFitSizeInSize(original:CGSize, target:CGSize) -> CGFloat {
+    private class func scaleToAspectFitSizeInSize(original:CGSize, target:CGSize) -> CGFloat
+    {
         // first try to match width
         let s = target.width / original.width;
         // if we scale the height to make the widths equal, does it still fit?

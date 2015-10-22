@@ -85,6 +85,7 @@ class DrawingPlayerViewController: UIViewController, DrawingPlayerViewDelegate
         super.viewDidAppear(animated)
         
         drawingPlayerView!.play()
+//        drawingPlayerView!.finish()
     }
     
     override func viewDidDisappear(animated: Bool)
@@ -102,7 +103,8 @@ class DrawingPlayerViewController: UIViewController, DrawingPlayerViewDelegate
     func handleTap(gestureRecognizer: UIGestureRecognizer)
     {
         if drawingPlayerView!.isPlaying() {
-            drawingPlayerView!.fastForward(10)
+            drawingPlayerView!.finish()
+//            drawingPlayerView!.fastForward(10)
         } else {
             drawingPlayerView!.play()
         }
@@ -138,6 +140,11 @@ class DrawingPlayerViewController: UIViewController, DrawingPlayerViewDelegate
     func didUpdatePlaybackSpeed(multiplier: Int)
     {
         speedButton?.title = "\(multiplier)"
+    }
+    
+    func didFinishPlayback(image: UIImage)
+    {
+        print("didFinishPlayback")
     }
     
     // MARK: deinit

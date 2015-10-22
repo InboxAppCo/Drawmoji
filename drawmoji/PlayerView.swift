@@ -11,6 +11,7 @@ import UIKit
 protocol PlayerViewDelegate:class
 {
     func didUpdatePlaybackSpeed(multiplier:Int)
+    func didFinishPlayback(image:UIImage)
 }
 
 class PlayerView:UIView
@@ -32,10 +33,9 @@ class PlayerView:UIView
     
     private var displayLink:CADisplayLink?
     
-    private(set) var isPaused:Bool = true
+    private(set) var isPaused:Bool = false
     private(set) var isPlaying:Bool = false
     private(set) var isFinishing:Bool = false
-    private(set) var isFastForwarding:Bool = false
     
     private let drawingQueue = dispatch_queue_create("com.inboxtheapp.background.drawing.player.drawing", nil);
     private let finishingQueue = dispatch_queue_create("com.inboxtheapp.background.drawing.player.finishing", nil);
@@ -67,7 +67,6 @@ class PlayerView:UIView
         self.duration = duration(totalPointCount)
         self.originalPointsPerFrame = pointsPerFrame(totalPointCount, duration:duration, frameRate: 60)
         self.playbackPointsPerFrame = self.originalPointsPerFrame
-        print("totalPointCount = \(self.totalPointCount)")
     }
     
     required init?(coder aDecoder: NSCoder)
@@ -99,7 +98,21 @@ class PlayerView:UIView
             } else {
                 self.isPlaying = false
                 self.isFinishing = false
+                
                 self.playbackPointsPerFrame = self.originalPointsPerFrame
+                
+                newFrozenImage = CGBitmapContextCreateImage(self.frozenContext)
+                if let frozenImage = newFrozenImage {
+                    self.finishedImage = UIImage(CGImage:frozenImage)
+                    self.delegate?.didFinishPlayback(UIImage(CGImage:frozenImage))
+                } else {
+                    UIGraphicsBeginImageContextWithOptions(self.bounds.size, true, 0);
+                    self.drawViewHierarchyInRect(self.bounds, afterScreenUpdates: true)
+                    let newFrozenUIImage = UIGraphicsGetImageFromCurrentImageContext();
+                    UIGraphicsEndImageContext();
+                    self.finishedImage = newFrozenUIImage
+                    self.delegate?.didFinishPlayback(newFrozenUIImage)
+                }
             }
             
             if self.isPlaying {
@@ -120,9 +133,12 @@ class PlayerView:UIView
             self.layer.contents = image.CGImage
             self.isFinishing = false
         } else {
+            //let benchmarker = Benchmarker()
+            //benchmarker.start()
             createFinishedImage({ (image) -> Void in
                 self.layer.contents = image
                 self.isFinishing = false
+                //print("finishDrawing() took \(benchmarker.stop()) seconds.")
             })
         }
     }
@@ -131,12 +147,15 @@ class PlayerView:UIView
     private func createFinishedImage(completion:completionBlock?)
     {
         dispatch_async(finishingQueue) {
-            for var index = self.currentPointCount; index < self.totalPointCount; index++ {
-                let retval = self.drawing.lineForPoint(self.currentPointCount)
-                if let line = retval.0 {
-                    line.drawPointInContext(retval.1, context:self.frozenContext)
+            let retval = self.drawing.lineForPoint(self.currentPointCount)
+            if let line = retval.0 {
+                if let indexOf = self.drawing.lines.indexOf(line) {
+                    for var index = indexOf; index < self.drawing.lines.count; index++ {
+                        self.drawing.lines[index].drawLineInContext(self.frozenContext)
+                    }
+                    
+                    self.currentPointCount = self.totalPointCount
                 }
-                self.currentPointCount++
             }
             
             let newFrozenImage:CGImageRef? = CGBitmapContextCreateImage(self.frozenContext)
@@ -144,7 +163,16 @@ class PlayerView:UIView
             dispatch_async(dispatch_get_main_queue()) {
                 if let frozenImage = newFrozenImage {
                     self.finishedImage = UIImage(CGImage: frozenImage)
+                    self.delegate?.didFinishPlayback(UIImage(CGImage: frozenImage))
                     completion?(image:frozenImage)
+                } else {
+                    UIGraphicsBeginImageContextWithOptions(self.bounds.size, true, 0);
+                    self.drawViewHierarchyInRect(self.bounds, afterScreenUpdates: true)
+                    let newFrozenUIImage = UIGraphicsGetImageFromCurrentImageContext();
+                    UIGraphicsEndImageContext();
+                    self.finishedImage = newFrozenUIImage
+                    self.delegate?.didFinishPlayback(newFrozenUIImage)
+                    completion?(image:newFrozenUIImage.CGImage!)
                 }
             }
         }
@@ -158,9 +186,7 @@ class PlayerView:UIView
             return
         }
         
-        if isPlaying {
-            pause()
-        } else {
+        if !isPlaying {
             if isPaused {
                 isPaused = false
                 isPlaying = true
@@ -171,7 +197,6 @@ class PlayerView:UIView
                 layer.contents = nil
                 playbackPointsPerFrame = originalPointsPerFrame
                 multiplier = 1
-                isFastForwarding = false
                 isPlaying = true
                 draw()
             }
@@ -204,7 +229,7 @@ class PlayerView:UIView
         layer.contents = nil
         playbackPointsPerFrame = originalPointsPerFrame
         multiplier = 1
-        isFastForwarding = false
+        isPaused = false
     }
     
     func finish()
@@ -218,7 +243,7 @@ class PlayerView:UIView
         finishDrawing()
         playbackPointsPerFrame = originalPointsPerFrame
         multiplier = 1
-        isFastForwarding = false
+        isPaused = false
     }
     
     func fastForward(multiplier:Int)
@@ -227,24 +252,12 @@ class PlayerView:UIView
             return
         }
         
-        if isFastForwarding {
-            isFastForwarding = false
-            self.multiplier = 1
-            playbackPointsPerFrame = originalPointsPerFrame
-            delegate?.didUpdatePlaybackSpeed(self.multiplier)
-            if isPlaying == false {
-                isPaused = true
-                play()
-            }
-        } else {
-            isFastForwarding = true
-            self.multiplier = self.multiplier * multiplier
-            playbackPointsPerFrame = originalPointsPerFrame * self.multiplier
-            delegate?.didUpdatePlaybackSpeed(self.multiplier)
-            if isPlaying == false {
-                isPaused = true
-                play()
-            }
+        self.multiplier = self.multiplier * multiplier
+        playbackPointsPerFrame = originalPointsPerFrame * self.multiplier
+        delegate?.didUpdatePlaybackSpeed(self.multiplier)
+        if isPlaying == false {
+            isPaused = true
+            play()
         }
     }
     
@@ -285,8 +298,7 @@ class PlayerView:UIView
         return pointCount / Int(duration * Double(frameRate));
     }
     
-    deinit
-    {
-        print("PlayerView deinit")
+    deinit {
+        
     }
 }

@@ -146,7 +146,14 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
     }
     
     func save(sender: UIBarButtonItem) {
-        
+//        let documents = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as! String
+//        let writePath = documents.stringByAppendingPathComponent("file.plist")
+//        
+//        
+//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//        NSString *documentsPath = [paths objectAtIndex:0]; //Get the docs directory
+//        NSString *filePath = [documentsPath stringByAppendingPathComponent:@"image.png"]; //Add the file name
+//        [pngData writeToFile:filePath atomically:YES]; //Write the file
     }
     
     func photo(sender: UIBarButtonItem) {
@@ -251,8 +258,6 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
     // MARK: DrawingCanvasViewDelegate
     
     func didUpdateUndoRedoCounts(undoCount: Int, redoCount: Int) {
-        print("undo count:\(undoCount) redo count:\(redoCount)")
-        
         if undoCount > 0 {
             undoButton?.enabled = true
             undoCountButton?.title = "\(undoCount)"

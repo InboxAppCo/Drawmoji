@@ -11,27 +11,30 @@
 		98014F9F1BC16DBA0020B48D /* DrawingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98014F9E1BC16DBA0020B48D /* DrawingsViewController.swift */; };
 		98014FA41BC16DBA0020B48D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 98014FA31BC16DBA0020B48D /* Assets.xcassets */; };
 		98014FA71BC16DBA0020B48D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 98014FA51BC16DBA0020B48D /* LaunchScreen.storyboard */; };
-		98014FD11BC1AD760020B48D /* DrawingOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98014FD01BC1AD760020B48D /* DrawingOptionsViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		98014FD51BC1B8BE0020B48D /* DrawingPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98014FD41BC1B8BE0020B48D /* DrawingPlayerViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		98312FD41BC371C5006092FA /* SizePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98312FD31BC371C5006092FA /* SizePickerViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		98312FD61BC38C69006092FA /* DrawingCanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98312FD51BC38C69006092FA /* DrawingCanvasView.swift */; settings = {ASSET_TAGS = (); }; };
-		98620F561BD6824B00F4D9CD /* DrawingToMediaProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98620F551BD6824B00F4D9CD /* DrawingToMediaProcessor.swift */; settings = {ASSET_TAGS = (); }; };
-		9866C2261BCDA8DA00A27AE9 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9866C2251BCDA8DA00A27AE9 /* PlayerView.swift */; settings = {ASSET_TAGS = (); }; };
-		9866C22A1BCDA8E500A27AE9 /* DrawingBinaryProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 9866C2291BCDA8E500A27AE9 /* DrawingBinaryProcessor.m */; settings = {ASSET_TAGS = (); }; };
-		9866C2301BCDA8F100A27AE9 /* NSInputStream+Inbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 9866C22E1BCDA8F100A27AE9 /* NSInputStream+Inbox.m */; settings = {ASSET_TAGS = (); }; };
-		9866C2331BCDACF400A27AE9 /* NSOutputStream+Inbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 9866C2321BCDACF400A27AE9 /* NSOutputStream+Inbox.m */; settings = {ASSET_TAGS = (); }; };
-		989553D81BCEFAA30097FA7B /* test591579072.ibdr in Resources */ = {isa = PBXBuildFile; fileRef = 989553D71BCEFAA30097FA7B /* test591579072.ibdr */; settings = {ASSET_TAGS = (); }; };
-		989A2B501BC2D2E7001375CD /* Drawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B4F1BC2D2E7001375CD /* Drawing.swift */; settings = {ASSET_TAGS = (); }; };
-		989A2B541BC2E00E001375CD /* DrawingJsonProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B531BC2E00E001375CD /* DrawingJsonProcessor.swift */; settings = {ASSET_TAGS = (); }; };
-		989A2B5A1BC315F1001375CD /* DrawingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B571BC315F1001375CD /* DrawingViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		989A2B5B1BC315F1001375CD /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B581BC315F1001375CD /* CanvasView.swift */; settings = {ASSET_TAGS = (); }; };
-		989A2B5C1BC315F1001375CD /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B591BC315F1001375CD /* Line.swift */; settings = {ASSET_TAGS = (); }; };
-		989A2B601BC329F1001375CD /* ColorPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B5F1BC329F1001375CD /* ColorPickerViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		989C02311BD5BD30004CB588 /* DrawingPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989C02301BD5BD30004CB588 /* DrawingPlayerView.swift */; settings = {ASSET_TAGS = (); }; };
-		989C02331BD5EDA5004CB588 /* 5625b4a3e66a33ac020041b0.ibdr in Resources */ = {isa = PBXBuildFile; fileRef = 989C02321BD5EDA5004CB588 /* 5625b4a3e66a33ac020041b0.ibdr */; settings = {ASSET_TAGS = (); }; };
-		98CF93481BCBFF5400047EDA /* test826957259.ibdr in Resources */ = {isa = PBXBuildFile; fileRef = 98CF93441BCBF32C00047EDA /* test826957259.ibdr */; settings = {ASSET_TAGS = (); }; };
-		98CF93491BCBFF5700047EDA /* 561bc1d202f859ee1d0041a8.ibdr in Resources */ = {isa = PBXBuildFile; fileRef = 98CF93461BCBF9BA00047EDA /* 561bc1d202f859ee1d0041a8.ibdr */; settings = {ASSET_TAGS = (); }; };
-		98CF934C1BCC011200047EDA /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98CF934B1BCC011200047EDA /* UIColorExtension.swift */; settings = {ASSET_TAGS = (); }; };
+		98014FD11BC1AD760020B48D /* DrawingOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98014FD01BC1AD760020B48D /* DrawingOptionsViewController.swift */; };
+		98014FD51BC1B8BE0020B48D /* DrawingPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98014FD41BC1B8BE0020B48D /* DrawingPlayerViewController.swift */; };
+		98312FD41BC371C5006092FA /* SizePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98312FD31BC371C5006092FA /* SizePickerViewController.swift */; };
+		98312FD61BC38C69006092FA /* DrawingCanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98312FD51BC38C69006092FA /* DrawingCanvasView.swift */; };
+		98620F561BD6824B00F4D9CD /* DrawingToMediaProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98620F551BD6824B00F4D9CD /* DrawingToMediaProcessor.swift */; };
+		9866C2261BCDA8DA00A27AE9 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9866C2251BCDA8DA00A27AE9 /* PlayerView.swift */; };
+		9866C22A1BCDA8E500A27AE9 /* DrawingBinaryProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 9866C2291BCDA8E500A27AE9 /* DrawingBinaryProcessor.m */; };
+		9866C2301BCDA8F100A27AE9 /* NSInputStream+Inbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 9866C22E1BCDA8F100A27AE9 /* NSInputStream+Inbox.m */; };
+		9866C2331BCDACF400A27AE9 /* NSOutputStream+Inbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 9866C2321BCDACF400A27AE9 /* NSOutputStream+Inbox.m */; };
+		9876C53A1BD835FB008A49B7 /* DrawingMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9876C5391BD835FB008A49B7 /* DrawingMetadata.swift */; };
+		9876C53C1BD838F2008A49B7 /* DrawingDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9876C53B1BD838F2008A49B7 /* DrawingDocument.swift */; };
+		98830AA41BD913F100E9A3B9 /* Benchmarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98830AA31BD913F100E9A3B9 /* Benchmarker.swift */; };
+		989553D81BCEFAA30097FA7B /* test591579072.ibdr in Resources */ = {isa = PBXBuildFile; fileRef = 989553D71BCEFAA30097FA7B /* test591579072.ibdr */; };
+		989A2B501BC2D2E7001375CD /* Drawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B4F1BC2D2E7001375CD /* Drawing.swift */; };
+		989A2B541BC2E00E001375CD /* DrawingJsonProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B531BC2E00E001375CD /* DrawingJsonProcessor.swift */; };
+		989A2B5A1BC315F1001375CD /* DrawingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B571BC315F1001375CD /* DrawingViewController.swift */; };
+		989A2B5B1BC315F1001375CD /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B581BC315F1001375CD /* CanvasView.swift */; };
+		989A2B5C1BC315F1001375CD /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B591BC315F1001375CD /* Line.swift */; };
+		989A2B601BC329F1001375CD /* ColorPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989A2B5F1BC329F1001375CD /* ColorPickerViewController.swift */; };
+		989C02311BD5BD30004CB588 /* DrawingPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989C02301BD5BD30004CB588 /* DrawingPlayerView.swift */; };
+		989C02331BD5EDA5004CB588 /* 5625b4a3e66a33ac020041b0.ibdr in Resources */ = {isa = PBXBuildFile; fileRef = 989C02321BD5EDA5004CB588 /* 5625b4a3e66a33ac020041b0.ibdr */; };
+		98CF93481BCBFF5400047EDA /* test826957259.ibdr in Resources */ = {isa = PBXBuildFile; fileRef = 98CF93441BCBF32C00047EDA /* test826957259.ibdr */; };
+		98CF93491BCBFF5700047EDA /* 561bc1d202f859ee1d0041a8.ibdr in Resources */ = {isa = PBXBuildFile; fileRef = 98CF93461BCBF9BA00047EDA /* 561bc1d202f859ee1d0041a8.ibdr */; };
+		98CF934C1BCC011200047EDA /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98CF934B1BCC011200047EDA /* UIColorExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +57,9 @@
 		9866C22E1BCDA8F100A27AE9 /* NSInputStream+Inbox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSInputStream+Inbox.m"; sourceTree = "<group>"; };
 		9866C2311BCDACF400A27AE9 /* NSOutputStream+Inbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSOutputStream+Inbox.h"; sourceTree = "<group>"; };
 		9866C2321BCDACF400A27AE9 /* NSOutputStream+Inbox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSOutputStream+Inbox.m"; sourceTree = "<group>"; };
+		9876C5391BD835FB008A49B7 /* DrawingMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingMetadata.swift; sourceTree = "<group>"; };
+		9876C53B1BD838F2008A49B7 /* DrawingDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingDocument.swift; sourceTree = "<group>"; };
+		98830AA31BD913F100E9A3B9 /* Benchmarker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Benchmarker.swift; sourceTree = "<group>"; };
 		989553D71BCEFAA30097FA7B /* test591579072.ibdr */ = {isa = PBXFileReference; lastKnownFileType = file; path = test591579072.ibdr; sourceTree = "<group>"; };
 		989A2B4F1BC2D2E7001375CD /* Drawing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Drawing.swift; sourceTree = "<group>"; };
 		989A2B531BC2E00E001375CD /* DrawingJsonProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingJsonProcessor.swift; sourceTree = "<group>"; };
@@ -137,6 +143,8 @@
 			children = (
 				989A2B4F1BC2D2E7001375CD /* Drawing.swift */,
 				989A2B591BC315F1001375CD /* Line.swift */,
+				9876C5391BD835FB008A49B7 /* DrawingMetadata.swift */,
+				9876C53B1BD838F2008A49B7 /* DrawingDocument.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -168,6 +176,7 @@
 				9866C2321BCDACF400A27AE9 /* NSOutputStream+Inbox.m */,
 				98CF934B1BCC011200047EDA /* UIColorExtension.swift */,
 				98620F551BD6824B00F4D9CD /* DrawingToMediaProcessor.swift */,
+				98830AA31BD913F100E9A3B9 /* Benchmarker.swift */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -247,11 +256,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				98014F9F1BC16DBA0020B48D /* DrawingsViewController.swift in Sources */,
+				9876C53A1BD835FB008A49B7 /* DrawingMetadata.swift in Sources */,
 				98CF934C1BCC011200047EDA /* UIColorExtension.swift in Sources */,
+				9876C53C1BD838F2008A49B7 /* DrawingDocument.swift in Sources */,
 				989C02311BD5BD30004CB588 /* DrawingPlayerView.swift in Sources */,
 				9866C2331BCDACF400A27AE9 /* NSOutputStream+Inbox.m in Sources */,
 				9866C2261BCDA8DA00A27AE9 /* PlayerView.swift in Sources */,
 				98312FD41BC371C5006092FA /* SizePickerViewController.swift in Sources */,
+				98830AA41BD913F100E9A3B9 /* Benchmarker.swift in Sources */,
 				9866C22A1BCDA8E500A27AE9 /* DrawingBinaryProcessor.m in Sources */,
 				989A2B5B1BC315F1001375CD /* CanvasView.swift in Sources */,
 				98620F561BD6824B00F4D9CD /* DrawingToMediaProcessor.swift in Sources */,

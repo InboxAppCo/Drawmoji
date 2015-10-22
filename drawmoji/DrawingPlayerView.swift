@@ -11,11 +11,12 @@ import UIKit
 @objc protocol DrawingPlayerViewDelegate:class
 {
     optional func didUpdatePlaybackSpeed(multiplier:Int)
+    optional func didFinishPlayback(image: UIImage)
 }
 
 class DrawingPlayerView:UIView
 {
-    private var backgroundImageView:UIImageView
+    private(set) var backgroundImageView:UIImageView
     private var playerView:PlayerView
     private var drawing:Drawing
     private var hiddenDelegate:DrawingPlayerViewDelegateHandler?
@@ -97,9 +98,18 @@ class DrawingPlayerView:UIView
         playerView.fastForward(multiplier)
     }
     
-    deinit
+    var multiplier:Int
     {
-        print("DrawingPlayerView deinit")
+        return playerView.multiplier
+    }
+    
+    var finishedImage:UIImage?
+    {
+        return playerView.finishedImage
+    }
+    
+    deinit {
+        
     }
 }
 
@@ -118,5 +128,10 @@ private class DrawingPlayerViewDelegateHandler:NSObject, PlayerViewDelegate {
     func didUpdatePlaybackSpeed(multiplier: Int)
     {
         outer?.delegate?.didUpdatePlaybackSpeed?(multiplier)
+    }
+    
+    func didFinishPlayback(image:UIImage)
+    {
+        outer?.delegate?.didFinishPlayback?(image)
     }
 }
