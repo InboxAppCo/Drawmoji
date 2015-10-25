@@ -30,6 +30,7 @@ class CanvasView: UIControl
     
     var currentColor = UIColor.blackColor()
     var currentLineWidth:CGFloat = 5.0
+    var currentBrushType:BrushType = BrushType.Pencil
     
     private var currentFrozenImage:CGImage?
     
@@ -259,6 +260,7 @@ class CanvasView: UIControl
         let newLine = Line()
         newLine.color = currentColor
         newLine.lineWidth = currentLineWidth
+        newLine.brushType = currentBrushType
         
         activeLine = newLine
         

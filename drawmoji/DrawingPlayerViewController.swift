@@ -50,7 +50,7 @@ class DrawingPlayerViewController: UIViewController, DrawingPlayerViewDelegate
             
             let x = (size.width - CGFloat(newDrawing.width))/2
             let y = (size.height - CGFloat(newDrawing.height))/2
-            drawingPlayerView = DrawingPlayerView(drawing: newDrawing, frame: CGRect(x: x, y: y, width: CGFloat(newDrawing.width), height: CGFloat(newDrawing.height)))
+            drawingPlayerView = DrawingPlayerView(drawing: newDrawing, frame: CGRect(x: x, y: y, width: CGFloat(newDrawing.width), height: CGFloat(newDrawing.height)), finishedImage:nil)
         } else {
             drawingPlayerView = DrawingPlayerView(frame: CGRect(x: 0, y: 108, width: view.frame.size.width, height: view.frame.size.height-152))
         }

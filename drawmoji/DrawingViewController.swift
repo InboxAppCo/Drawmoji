@@ -246,6 +246,11 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
     // MARK: ColorPickerViewControllerDelegate
     
     func colorSelectionChanged(color: UIColor) {
+        if (CGColorGetAlpha(color.CGColor) == 0){
+            drawingCanvasView?.setCurrentBrushType(.Eraser)
+        } else {
+            drawingCanvasView?.setCurrentBrushType(.Pencil)
+        }
         drawingCanvasView?.setCurrentColor(color)
     }
     
@@ -257,10 +262,10 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
     
     // MARK: DrawingCanvasViewDelegate
     
-    func didUpdateUndoRedoCounts(undoCount: Int, redoCount: Int) {
-        if undoCount > 0 {
+    func drawingCanvasView(drawingCanvasView: DrawingCanvasView, didUpdateUndoCount: Int, redoCount: Int) {
+        if didUpdateUndoCount > 0 {
             undoButton?.enabled = true
-            undoCountButton?.title = "\(undoCount)"
+            undoCountButton?.title = "\(didUpdateUndoCount)"
         } else {
             undoButton?.enabled = false
             undoCountButton?.title = ""
@@ -275,15 +280,15 @@ class DrawingViewController: UIViewController, UIToolbarDelegate, ColorPickerVie
         }
     }
     
-    func willBeginForceDrawingAllLines() {
-        drawingCanvasView?.hidden = true
+    func drawingCanvasViewWillBeginForceDrawingAllLines(drawingCanvasView: DrawingCanvasView) {
+        drawingCanvasView.hidden = true
         activityIndicator.startAnimating()
         activityIndicator.hidden = false
     }
     
-    func didFinishForceDrawingAllLines() {
+    func drawingCanvasViewDidFinishForceDrawingAllLines(drawingCanvasView: DrawingCanvasView) {
         activityIndicator.stopAnimating()
-        drawingCanvasView?.hidden = false
+        drawingCanvasView.hidden = false
     }
     
     // MARK: UIImagePickerControllerDelegate Methods

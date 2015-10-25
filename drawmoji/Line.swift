@@ -8,12 +8,17 @@
 
 import UIKit
 
+@objc enum BrushType: Int {
+    case Pencil = 0
+    case Eraser = 1
+}
+
 class Line: NSObject
 {
     // MARK: Properties
     
     var points = [CGPoint]()
-    var brushType:Int = 0
+    var brushType:BrushType = .Pencil // 0 = pencil, 1 = eraser
     var lineWidth:CGFloat = 5.0
     var color:UIColor = UIColor.blackColor()
     
@@ -24,7 +29,7 @@ class Line: NSObject
         
     }
     
-    convenience init(points:[CGPoint], brushType:Int, lineWidth:CGFloat, color:UIColor)
+    convenience init(points:[CGPoint], brushType:BrushType, lineWidth:CGFloat, color:UIColor)
     {
         self.init()
         self.points = points
@@ -39,7 +44,7 @@ class Line: NSObject
     {
         self.init()
         points = convertNSArrayOfNSValuesToArrayOfCGPoints(aDecoder.decodeObjectForKey("points") as! NSArray)
-        brushType = aDecoder.decodeObjectForKey("brushType") as! Int
+        brushType = aDecoder.decodeObjectForKey("brushType") as! BrushType
         lineWidth = aDecoder.decodeObjectForKey("lineWidth") as! CGFloat
         color = aDecoder.decodeObjectForKey("color") as! UIColor
     }
@@ -47,7 +52,7 @@ class Line: NSObject
     func encodeWithCoder(aCoder: NSCoder)
     {
         aCoder.encodeObject(convertArrayOfCGPointsToNSArrayOfNSValues(points), forKey: "points")
-        aCoder.encodeObject(brushType, forKey: "brushType")
+        aCoder.encodeObject(brushType.rawValue, forKey: "brushType")
         aCoder.encodeObject(lineWidth, forKey: "lineWidth")
         aCoder.encodeObject(color, forKey: "color")
     }
@@ -113,16 +118,14 @@ class Line: NSObject
             priorPriorPoint = points[pointCount-2]
         }
         
-        let theColor = color.CGColor
-        if(CGColorGetAlpha(theColor) == 0) {
+        CGContextSetLineWidth(context, lineWidth)
+        if(brushType == .Eraser) {
             CGContextSetBlendMode(context, .Clear);
         } else {
+            CGContextSetStrokeColorWithColor(context, color.CGColor)
             CGContextSetBlendMode(context, .Normal);
         }
         
-        CGContextSetLineWidth(context, lineWidth)
-            
-        CGContextSetStrokeColorWithColor(context, theColor)
         CGContextBeginPath(context)
         let mid1 = midPointOfPoints(priorPoint,point2: priorPriorPoint);
         let mid2 = midPointOfPoints(point,point2: priorPoint);
@@ -141,20 +144,18 @@ class Line: NSObject
         var maybePriorPoint: CGPoint?
         var maybePriorPriorPoint: CGPoint?
         
-        let theColor = color.CGColor
-        if(CGColorGetAlpha(theColor) == 0) {
+        CGContextSetLineWidth(context, lineWidth)
+        if(brushType == .Eraser) {
             CGContextSetBlendMode(context, .Clear);
         } else {
+            CGContextSetStrokeColorWithColor(context, color.CGColor)
             CGContextSetBlendMode(context, .Normal);
         }
-        
-        CGContextSetLineWidth(context, lineWidth)
         
         for point in points {
             let priorPoint = maybePriorPoint ?? point
             let priorPriorPoint = maybePriorPriorPoint ?? priorPoint
             
-            CGContextSetStrokeColorWithColor(context, theColor)
             CGContextBeginPath(context)
             let mid1 = midPointOfPoints(priorPoint,point2: priorPriorPoint);
             let mid2 = midPointOfPoints(point,point2: priorPoint);

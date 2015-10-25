@@ -27,7 +27,7 @@ class DrawingJsonProcessor
                 let colorString:String = path["color"] as! String
                 line.color = UIColor(hexString:colorString)
                 line.lineWidth = lineWidth
-                line.brushType = 1
+                line.brushType = BrushType.Pencil
                 for point in path["points"] as! [AnyObject] {
                     let x = point[0] as! Double
                     let y = point[1] as! Double

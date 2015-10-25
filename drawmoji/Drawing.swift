@@ -152,15 +152,19 @@ class Drawing:NSObject, NSCoding
         
         let newDrawing = Drawing()
         newDrawing.backgroundImage = drawing.backgroundImage
-        newDrawing.width = Int(originalWidthFloat*scale)
-        newDrawing.height = Int(originalHeightFloat*scale)
+        newDrawing.width = Int(originalWidthFloat)
+        newDrawing.height = Int(originalHeightFloat)
+        
+        let widthAdjustment = (originalWidthFloat - (originalWidthFloat * scale))/2
+        let heightAdjustment = (originalHeightFloat - (originalHeightFloat * scale))/2
         
         for line in drawing.lines {
             let newLine = Line()
             newLine.color = line.color
             newLine.lineWidth = line.lineWidth * scale
+            newLine.brushType = line.brushType
             for point in line.points {
-                let newPoint = CGPoint(x: point.x * scale, y: point.y * scale)
+                let newPoint = CGPoint(x: point.x * scale + widthAdjustment, y: point.y * scale + heightAdjustment)
                 newLine.addPointAtLocation(newPoint)
             }
             newDrawing.addLine(newLine)

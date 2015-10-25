@@ -9,7 +9,7 @@
 #import "DrawingBinaryProcessor.h"
 #import "NSInputStream+Inbox.h"
 #import "NSOutputStream+Inbox.h"
-#import "drawmoji-Swift.h"
+#import "Inbox-Swift.h"
 
 static int const ENCODING_VERSION = 1;
 static int const MAGIC_NUMBER = 0xF0E1D2C3;
@@ -93,12 +93,18 @@ static Byte const ANOTHER_LINE  = 0xF;
     
     if (containsBackground) {
         NSMutableData *imageData = [NSMutableData data];
-        uint8_t buffer[backgroundImageLength];
-        NSInteger len;
-        len = [inputStream read:buffer maxLength:sizeof(buffer)];
-        if (len > 0) {
-            [imageData appendBytes:(const void *)buffer length:len];
+        NSInteger lengthRead = 0;
+      
+        while (lengthRead < backgroundImageLength) {
+            uint8_t buffer[5000];
+            NSInteger len;
+            len = [inputStream read:buffer maxLength:sizeof(buffer)];
+            if (len > 0) {
+                [imageData appendBytes:(const void *)buffer length:len];
+            }
+            lengthRead = lengthRead + len;
         }
+      
         drawing.backgroundImage = [UIImage imageWithData:imageData];
     }
     

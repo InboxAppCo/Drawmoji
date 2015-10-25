@@ -25,11 +25,11 @@ class DrawingCanvasView:UIView, UIScrollViewDelegate
 {
     private var scrollView:UIScrollView
     private var containerView:UIView
-    private var backgroundImageView:UIImageView
     private var canvasView:CanvasView
     private var drawing:Drawing
     private var hiddenDelegate:DrawingCanvasViewDelegateHandler?
     weak var delegate:DrawingCanvasViewDelegate?
+    var backgroundImageView:UIImageView
     
     init(drawing:Drawing, frame:CGRect)
     {
@@ -124,6 +124,11 @@ class DrawingCanvasView:UIView, UIScrollViewDelegate
     func setCurrentLineWidth(lineWidth:CGFloat)
     {
         canvasView.currentLineWidth = lineWidth
+    }
+    
+    func setCurrentBrushType(brushType:BrushType)
+    {
+        canvasView.currentBrushType = brushType
     }
     
     func clear()
